@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
+import { Check, Copy, Mail, MessageSquare } from 'lucide-react';
 import { buildMailtoUrl, buildSmsUrl, buildTrustedMessage, copyText, TrustedMessageContext } from '../services/trustedContact';
-import { BigButton, Card, SectionHeading } from './ui';
+import { Button, ButtonLink, Callout, Section } from './ui';
 
 interface TrustedVerificationProps {
   id?: string;
   context: Omit<TrustedMessageContext, 'recipientName'>;
-  /** Shown in a calmer, quieter style when the risk is low. */
-  compact?: boolean;
+  first?: boolean;
 }
 
-export const TrustedVerification: React.FC<TrustedVerificationProps> = ({ id = 'wity-trusted', context, compact }) => {
+export const TrustedVerification: React.FC<TrustedVerificationProps> = ({ id = 'wity-trusted', context, first }) => {
   const [name, setName] = useState('');
   const [edited, setEdited] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
 
-  const generated = buildTrustedMessage({ ...context, recipientName: name });
-  const message = edited ?? generated;
+  const message = edited ?? buildTrustedMessage({ ...context, recipientName: name });
 
   const handleCopy = async () => {
     const ok = await copyText(message);
@@ -24,79 +23,76 @@ export const TrustedVerification: React.FC<TrustedVerificationProps> = ({ id = '
   };
 
   return (
-    <Card tone={compact ? 'plain' : 'brand'} aria-labelledby={`${id}-heading`} id={id}>
-      <SectionHeading id={`${id}-heading`}>
-        <span aria-hidden="true" className="mr-2">
-          🤝
-        </span>
-        Ask Someone I Trust
-      </SectionHeading>
-      <p className="mb-4 text-lg">
-        Scammers want you to feel alone and rushed. Talking to someone you trust breaks that spell. Here is a message you
-        can send to a family member or friend.
+    <Section id={id} title="Ask someone you trust" first={first}>
+      <p className="mb-4 max-w-2xl">
+        When something feels urgent, another person can help you slow down and verify it. Scammers often ask you to keep
+        things secret, so talking to someone is one of the most effective steps you can take.
       </p>
 
-      <p
-        role="note"
-        className="mb-4 rounded-xl border-2 border-warn bg-warn-soft p-3 text-base font-semibold text-ink"
-      >
-        Prototype note: WhatsItToYa? does not send anything for you. It writes the message, and you choose how to send it.
-      </p>
+      <Callout tone="info" role="note" className="mb-5 max-w-2xl">
+        <strong>How this works:</strong> WhatsItToYa? writes a message for you to share. It does not contact anyone or send
+        anything. You choose how and when to send it.
+      </Callout>
 
-      <label htmlFor={`${id}-name`} className="mb-1 block text-lg font-bold">
-        Who will you ask? (optional)
-      </label>
-      <input
-        id={`${id}-name`}
-        type="text"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-          setEdited(null);
-        }}
-        placeholder="For example: Sarah"
-        autoComplete="off"
-        className="mb-4 min-h-[3.25rem] w-full rounded-xl border-2 border-line bg-card px-4 text-lg"
-      />
+      <div className="max-w-2xl space-y-4">
+        <div>
+          <label htmlFor={`${id}-name`} className="t-label">
+            Who will you ask? <span className="t-small font-normal">(optional)</span>
+          </label>
+          <input
+            id={`${id}-name`}
+            type="text"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setEdited(null);
+            }}
+            placeholder="For example, Sarah"
+            autoComplete="off"
+            className="field sm:max-w-xs"
+          />
+        </div>
 
-      <label htmlFor={`${id}-message`} className="mb-1 block text-lg font-bold">
-        Your message (you can change it)
-      </label>
-      <textarea
-        id={`${id}-message`}
-        value={message}
-        onChange={(e) => setEdited(e.target.value)}
-        rows={7}
-        className="mb-4 w-full rounded-xl border-2 border-line bg-card p-4 text-lg leading-relaxed"
-      />
+        <div>
+          <label htmlFor={`${id}-message`} className="t-label">
+            Message <span className="t-small font-normal">(you can edit it)</span>
+          </label>
+          <textarea
+            id={`${id}-message`}
+            value={message}
+            onChange={(e) => setEdited(e.target.value)}
+            rows={7}
+            className="field"
+          />
+        </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <BigButton onClick={handleCopy}>{copyState === 'copied' ? '✔ Copied!' : '📋 Copy message'}</BigButton>
-        <a
-          href={buildMailtoUrl(message)}
-          className="inline-flex min-h-[3.5rem] items-center justify-center gap-2 rounded-xl border-2 border-brand bg-card px-6 py-3 text-lg font-bold text-brand hover:bg-brand-soft"
-        >
-          ✉️ Open in my email app
-        </a>
-        <a
-          href={buildSmsUrl(message)}
-          className="inline-flex min-h-[3.5rem] items-center justify-center gap-2 rounded-xl border-2 border-brand bg-card px-6 py-3 text-lg font-bold text-brand hover:bg-brand-soft"
-        >
-          💬 Open in my text app
-        </a>
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <Button onClick={handleCopy}>
+            {copyState === 'copied' ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+            {copyState === 'copied' ? 'Copied' : 'Copy message'}
+          </Button>
+          <ButtonLink href={buildMailtoUrl(message)}>
+            <Mail size={18} aria-hidden="true" />
+            Open in email app
+          </ButtonLink>
+          <ButtonLink href={buildSmsUrl(message)}>
+            <MessageSquare size={18} aria-hidden="true" />
+            Open in text app
+          </ButtonLink>
+        </div>
+
+        <div role="status" aria-live="polite" className="-mt-2 empty:hidden">
+          {copyState === 'copied' && <span className="text-ok">Copied. Paste it into a text or email to someone you trust.</span>}
+          {copyState === 'failed' && (
+            <span className="text-danger">Your browser blocked copying. Select the message above and copy it manually.</span>
+          )}
+        </div>
+
+        <p className="t-small">
+          The email and text buttons only open your own app with this message filled in. You still choose the recipient and
+          press send.
+        </p>
       </div>
-
-      <div role="status" aria-live="polite" className="mt-3 min-h-[1.75rem] text-lg font-semibold">
-        {copyState === 'copied' && <span className="text-ok">Copied. Now paste it into a text or email to someone you trust.</span>}
-        {copyState === 'failed' && (
-          <span className="text-danger">Your browser blocked copying. Please select the message above and copy it by hand.</span>
-        )}
-      </div>
-
-      <p className="mt-2 text-base text-muted">
-        The email and text buttons only open your own app with the message filled in. You still choose who gets it and
-        press send yourself.
-      </p>
-    </Card>
+    </Section>
   );
 };

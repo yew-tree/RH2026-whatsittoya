@@ -81,28 +81,30 @@ export default function App() {
     <div className="flex min-h-screen flex-col">
       <a
         href="#main-content"
-        className="sr-only-focusable fixed left-2 top-2 z-[60] rounded-lg bg-brand px-4 py-3 text-lg font-bold text-on-brand"
+        className="sr-only-focusable btn btn-primary fixed left-2 top-2 z-[60]"
       >
         Skip to main content
       </a>
 
       <SiteHeader page={page} onNavigate={navigate} settings={settings} onSettingsChange={setSettings} />
 
-      <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 focus:outline-none sm:px-6">
-        {page === 'home' && <HomePage onNavigate={navigate} onTryExample={tryExample} />}
-        {page === 'check' && <CheckPage checker={checker} onOpenLearn={openLearn} />}
-        {page === 'pause' && <PausePage onNavigate={navigate} onOpenLearn={openLearn} />}
-        {page === 'learn' && <LearnPage initialScamId={learnScamId} onNavigate={navigate} />}
-        {page === 'practice' && <PracticePage onNavigate={navigate} />}
+      <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-4xl flex-1 px-3 py-6 focus:outline-none sm:px-6 sm:py-8">
+        <div className="surface p-5 sm:p-8">
+          {page === 'home' && <HomePage onNavigate={navigate} onTryExample={tryExample} />}
+          {page === 'check' && <CheckPage checker={checker} onOpenLearn={openLearn} />}
+          {page === 'pause' && <PausePage onNavigate={navigate} onOpenLearn={openLearn} />}
+          {page === 'learn' && <LearnPage initialScamId={learnScamId} onNavigate={navigate} />}
+          {page === 'practice' && <PracticePage onNavigate={navigate} />}
+        </div>
       </main>
 
-      <footer className="border-t-2 border-line bg-card">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-base text-muted sm:px-6 md:flex-row md:items-center md:justify-between">
-          <p>
-            <strong className="text-ink">WhatsItToYa?</strong> · Stop. Check. Protect. · A hackathon prototype. It never
-            sends messages for you and cannot promise to catch every scam.
+      <footer className="border-t border-line bg-surface" style={{ borderTopWidth: 'var(--bw)' }}>
+        <div className="mx-auto flex max-w-4xl flex-col gap-2 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
+          <p className="t-small max-w-xl">
+            WhatsItToYa? looks for common warning signs. It cannot guarantee that any message is genuine, and it never
+            sends messages on your behalf. A hackathon prototype.
           </p>
-          <a href={FTC_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-brand underline">
+          <a href={FTC_URL} target="_blank" rel="noopener noreferrer" className="btn-link text-[0.95rem]">
             FTC scam guide (opens in a new tab)
           </a>
         </div>

@@ -45,7 +45,7 @@ The shield (`src/services/shieldSignals.ts`) looks for these signals in pasted e
 
 It builds on the existing analyzer (`src/services/heuristicAnalyzer.ts`) for links, sender matching and tone.
 
-A separate tool, **Pause Before You Pay**, asks ten plain yes/no questions for situations with no message to paste (for example, a phone call): unexpected contact, urgency, threats, secrecy, gift cards, crypto, wire transfers, "don't contact your bank", "don't tell your family", passwords or codes.
+A separate tool, **Pause Before You Pay**, is a short, guided questionnaire (nine questions, one at a time, with Yes / No / I'm not sure) for situations with no message to paste, such as a phone call: unexpected contact, urgency, threats, secrecy, gift cards, crypto, wire transfers, being told not to contact your bank or family, passwords or codes.
 
 ### 2. When does it intervene?
 
@@ -53,7 +53,7 @@ A separate tool, **Pause Before You Pay**, asks ten plain yes/no questions for s
 | --- | --- | --- |
 | **LOW CONCERN** | No meaningful signals | Calm result. No interruption. Reminder to verify unexpected requests about money or information |
 | **BE CAREFUL** | Some signals, or a request for money/credentials/links without strong pressure | Inline "until you have checked" rules, what we noticed, next steps. **No pop-up** |
-| **HIGH RISK** | A money / code / password / access request **combined with pressure**, or enough signals overall, or a high analyzer score | The **"Before you continue..."** interruption, then the full result |
+| **HIGH RISK** | A money / code / password / access request **combined with pressure**, or enough signals overall, or a high analyzer score | The **"Before you continue"** interruption, then the full result |
 
 The interruption is deliberately rare. Ordinary email never triggers it. Separately, **links inside any message with warning signs** are "disarmed": clicking one shows a second, smaller pause ("Hold on, this link is part of a message with warning signs") before anything can open.
 
@@ -61,11 +61,11 @@ Principle: *too early creates frustration, too late means money is lost.*
 
 ### 3. What happens next?
 
-1. **Interrupt.** "Before you continue..." lists the top warning signs and three rules: do not send money yet, do not share codes or passwords, do not use the phone number or link in the message.
-2. **Protect.** One of three big buttons:
+1. **Interrupt.** "Before you continue" lists the top warning signs and three rules: do not send money yet, do not share codes or passwords, do not use the phone number or link in the message.
+2. **Protect.** Three actions in the dialog:
    - **Ask someone I trust:** writes a calm, editable message ("I got a message that claims to be from a bank... Can you help me check?") with Copy, "Open in my email app" and "Open in my text app".
-   - **Check this safely:** step-by-step guidance for the claimed sender (bank, family member, government, tech support, boss, delivery, store, online friend, prize), always telling the user to find official contact details themselves.
-   - **What we noticed:** the full explanation.
+   - **How to check this safely:** step-by-step guidance for the claimed sender (bank, family member, government, tech support, boss, delivery, store, online friend, prize), always telling the user to find official contact details themselves.
+   - **See what we noticed:** the full explanation.
 3. **Educate.** "What we noticed" quotes the message, says *why it matters*, and names the manipulation tactic.
 4. **Learn and practice.** Links to the Learn center and the practice scenarios.
 
@@ -77,7 +77,7 @@ Principle: *too early creates frustration, too late means money is lost.*
 - **Rare, so it is taken seriously:** no alarm fatigue.
 - **Gives a next step, not just a warning:** a ready-to-send message to a trusted person and exact verification steps.
 - **Honest:** never says "safe"; never tells people to verify using details from the suspicious message; labels the prototype clearly.
-- **Accessible by design:** large text by default, one-click larger text, high contrast, big labeled buttons, keyboard and screen-reader support.
+- **Accessible by design:** large text by default, one-click larger text, high contrast, clearly labeled buttons with words rather than icons, keyboard and screen-reader support.
 
 ## Major features
 
@@ -90,10 +90,10 @@ Principle: *too early creates frustration, too late means money is lost.*
 | Disarmed links with a second pause | Message viewer | |
 | **Ask Someone I Trust** | Result and Pause pages | **Prototype.** Writes and copies a message. Opens the user's own email/text app. Sends nothing itself |
 | **Check It Safely** | Result and Pause pages | 10 claim types, "who do they say they are?" selector |
-| **Pause Before You Pay** | `#/pause` | 10 questions, PAUSE / DO NOT PAY YET / VERIFY INDEPENDENTLY |
+| **Pause Before You Pay** | `#/pause` | 9 guided questions (one at a time), then "Pause. Do not pay yet." with reasons and next steps |
 | **Learn to Spot a Scam** | `#/learn` | 14 scam guides (what it looks like, what they want, warning signs, what to do, how to verify safely) and 8 manipulation tactics |
 | **Would You Trust This?** | `#/practice` | 6 realistic scenarios, shuffled answers, non-shaming feedback |
-| Accessibility bar | All pages | Text size A / A+ / A++, high contrast, more spacing, less motion. Remembered on the device |
+| Accessibility panel | Header, all pages | Text size (Standard / Large / Extra large), high contrast, increased spacing, reduced motion. Remembered on the device |
 
 ## Technical architecture
 
@@ -108,12 +108,12 @@ Principle: *too early creates frustration, too late means money is lost.*
 (The full 4-5 minute presenter script is in `DEMO_SCRIPT.txt`.)
 
 1. **Hook (20s):** a 74-year-old gets a "fraud team" message: read the code, move your money, tell no one. "The danger is the pressure, not the link."
-2. **Detect (20s):** Check a Message -> paste the demo message (in `DEMO_SCRIPT.txt`) -> **Check this message**.
-3. **Interrupt (30s):** the "Before you continue..." dialog appears. Explain why it only appears for real risk.
+2. **Detect (20s):** Check a Message -> paste the demo message (in `DEMO_SCRIPT.txt`) -> **Check message**.
+3. **Interrupt (30s):** the "Before you continue" dialog appears. Explain why it only appears for real risk.
 4. **Protect (30s):** **Ask someone I trust** -> show the generated message -> Copy. Scroll to **Check It Safely**.
 5. **Educate (30s):** **What we noticed** -> "Why it matters" and the named tactics (urgency, fear, secrecy).
 6. **Pause Before You Pay (15s, optional):** answer yes to three questions -> PAUSE. DO NOT PAY YET.
-7. **Close (10s):** click **A++** and **High contrast**. "Stop. Check. Protect."
+7. **Close (10s):** open **Accessibility**, choose **Extra large** and **High contrast**. "Stop. Check. Protect."
 
 ## Short pitch
 

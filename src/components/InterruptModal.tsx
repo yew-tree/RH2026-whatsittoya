@@ -1,7 +1,8 @@
 import React from 'react';
+import { OctagonAlert } from 'lucide-react';
 import { ShieldAssessment } from '../services/shieldSignals';
 import { Dialog } from './Dialog';
-import { BigButton } from './ui';
+import { Button } from './ui';
 
 export type InterruptChoice = 'trust' | 'verify' | 'details';
 
@@ -19,56 +20,51 @@ export const InterruptModal: React.FC<InterruptModalProps> = ({ assessment, onCh
 
   return (
     <Dialog labelledBy="interrupt-title" describedBy="interrupt-desc" onClose={() => onChoose('details')} tone="danger">
-      <div className="flex items-start gap-4">
-        <span aria-hidden="true" className="text-5xl">
-          ✋
-        </span>
+      <div className="flex items-start gap-3">
+        <OctagonAlert size={28} className="mt-0.5 flex-shrink-0 text-danger" aria-hidden="true" />
         <div>
-          <h2 id="interrupt-title" className="text-3xl font-extrabold leading-tight text-danger">
-            Before you continue…
+          <h2 id="interrupt-title" className="text-[1.35rem] font-bold leading-tight">
+            Before you continue
           </h2>
-          <p id="interrupt-desc" className="mt-1 text-xl font-semibold">
-            We noticed several warning signs. Take a moment before sending money or information.
+          <p id="interrupt-desc" className="mt-1">
+            This message contains several signs commonly associated with payment scams. We recommend pausing before
+            you send money or share information.
           </p>
         </div>
       </div>
 
       {top.length > 0 && (
-        <ul className="mt-5 space-y-2 rounded-2xl border-2 border-line bg-paper p-4 text-lg">
-          {top.map((s) => (
-            <li key={s.id} className="flex gap-3">
-              <span aria-hidden="true" className="font-extrabold text-danger">
-                !
-              </span>
-              <span>{s.title}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-5">
+          <p className="t-meta mb-2">What we noticed</p>
+          <ul className="bullets">
+            {top.map((s) => (
+              <li key={s.id}>{s.title}</li>
+            ))}
+          </ul>
+        </div>
       )}
 
-      <div className="mt-5 rounded-2xl border-2 border-danger bg-danger-soft p-4">
-        <p className="mb-2 text-lg font-extrabold">Right now, please:</p>
-        <ul className="space-y-1 text-lg font-semibold">
-          <li>✋ Do not send money yet.</li>
-          <li>✋ Do not share any codes or passwords.</li>
-          <li>✋ Do not use the phone number or link in the message.</li>
+      <div className="callout callout-danger mt-5">
+        <p className="mb-1.5 font-semibold">Until you have checked:</p>
+        <ul className="bullets">
+          <li>Do not send money.</li>
+          <li>Do not share codes or passwords.</li>
+          <li>Do not use the phone number or link in the message.</li>
         </ul>
       </div>
 
-      <p className="mt-4 text-lg text-muted">
-        You have done nothing wrong. Reading a message cannot hurt you, and checking first was a smart move.
-      </p>
+      <p className="t-small mt-4">Reading a message cannot harm you. Checking before you act was the right step.</p>
 
-      <div className="mt-6 flex flex-col gap-3">
-        <BigButton data-autofocus onClick={() => onChoose('trust')} full>
-          🤝 Ask someone I trust
-        </BigButton>
-        <BigButton variant="secondary" onClick={() => onChoose('verify')} full>
-          ✅ Show me how to check this safely
-        </BigButton>
-        <BigButton variant="quiet" onClick={() => onChoose('details')} full>
-          Show me what you noticed
-        </BigButton>
+      <div className="mt-6 flex flex-col gap-2">
+        <Button data-autofocus onClick={() => onChoose('trust')} full>
+          Ask someone I trust
+        </Button>
+        <Button variant="secondary" onClick={() => onChoose('verify')} full>
+          How to check this safely
+        </Button>
+        <Button variant="link" onClick={() => onChoose('details')} className="self-start">
+          See what we noticed
+        </Button>
       </div>
     </Dialog>
   );

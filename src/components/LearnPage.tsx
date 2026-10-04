@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { SCAM_TYPES } from '../data/scams';
 import { TECHNIQUE_LIST, TECHNIQUES } from '../data/techniques';
 import { PageId } from './SiteHeader';
-import { BackButton, BigButton, BulletList, Card, PageTitle, SectionHeading } from './ui';
+import { BackLink, Bullets, Button, PageHeader, Section } from './ui';
 
 interface LearnPageProps {
   /** Scam to open straight away (for example, from a result page). */
@@ -15,6 +16,7 @@ type Tab = 'scams' | 'tactics';
 export const LearnPage: React.FC<LearnPageProps> = ({ initialScamId, onNavigate }) => {
   const [tab, setTab] = useState<Tab>('scams');
   const [openId, setOpenId] = useState<string | null>(initialScamId ?? null);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     if (initialScamId) {
@@ -25,6 +27,12 @@ export const LearnPage: React.FC<LearnPageProps> = ({ initialScamId, onNavigate 
 
   const open = openId ? SCAM_TYPES.find((s) => s.id === openId) : undefined;
 
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return SCAM_TYPES;
+    return SCAM_TYPES.filter((s) => `${s.name} ${s.summary} ${s.looksLike}`.toLowerCase().includes(q));
+  }, [query]);
+
   const show = (id: string | null) => {
     setOpenId(id);
     window.scrollTo({ top: 0 });
@@ -33,69 +41,58 @@ export const LearnPage: React.FC<LearnPageProps> = ({ initialScamId, onNavigate 
 
   if (open) {
     return (
-      <article className="space-y-6">
-        <BackButton onClick={() => show(null)}>Back to all scams</BackButton>
-        <PageTitle icon={open.icon} title={open.name} subtitle={open.summary} />
+      <article>
+        <BackLink onClick={() => show(null)}>All scams</BackLink>
+        <PageHeader meta="Learn to Spot a Scam" title={open.name} lead={open.summary} />
 
-        <Card aria-labelledby="looks-heading">
-          <SectionHeading id="looks-heading">What it looks like</SectionHeading>
-          <p className="text-xl">{open.looksLike}</p>
-        </Card>
+        <Section id="looks" title="What it looks like" first>
+          <p className="max-w-2xl">{open.looksLike}</p>
+        </Section>
 
-        <Card aria-labelledby="wants-heading" tone="warn">
-          <SectionHeading id="wants-heading">What the scammer wants</SectionHeading>
-          <p className="text-xl">{open.wants}</p>
-        </Card>
+        <Section id="wants" title="What the scammer wants">
+          <p className="max-w-2xl">{open.wants}</p>
+        </Section>
 
-        <Card aria-labelledby="signs-heading">
-          <SectionHeading id="signs-heading">Warning signs</SectionHeading>
-          <BulletList items={open.signs} marker="⚠" className="text-xl" />
-          <p className="mt-5 text-lg font-bold">Tricks used:</p>
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {open.techniques.map((t) => (
-              <li key={t} className="rounded-full border-2 border-brand bg-brand-soft px-3 py-1 text-base font-bold text-brand">
-                <span aria-hidden="true" className="mr-1">
-                  {TECHNIQUES[t].icon}
-                </span>
-                {TECHNIQUES[t].name}
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <Section id="signs" title="Warning signs">
+          <Bullets items={open.signs} className="max-w-2xl" />
+          <p className="t-small mt-4">
+            Tactics used: {open.techniques.map((t) => TECHNIQUES[t].name).join(', ')}.
+          </p>
+        </Section>
 
-        <Card aria-labelledby="todo-heading" tone="danger">
-          <SectionHeading id="todo-heading">What to do</SectionHeading>
-          <BulletList items={open.doThis} marker="✔" className="text-xl" />
-        </Card>
+        <Section id="todo" title="What to do">
+          <Bullets items={open.doThis} className="max-w-2xl" />
+        </Section>
 
-        <Card aria-labelledby="verify-heading" tone="brand">
-          <SectionHeading id="verify-heading">How to verify safely</SectionHeading>
-          <BulletList items={open.verify} marker="➜" className="text-xl" />
-          <p className="mt-4 text-lg font-bold">Never use the phone number, email address, or link from the suspicious message.</p>
-        </Card>
+        <Section id="verify" title="How to verify safely">
+          <Bullets items={open.verify} className="max-w-2xl" />
+          <p className="callout callout-warn mt-4 max-w-2xl">
+            <strong>Do not use the phone number, email address, or link from the suspicious message.</strong> Find the
+            official contact details yourself.
+          </p>
+        </Section>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <BigButton onClick={() => onNavigate('practice')}>🎯 Practice spotting scams</BigButton>
-          <BigButton variant="secondary" onClick={() => show(null)}>
+        <div className="section flex flex-col gap-2 sm:flex-row">
+          <Button onClick={() => onNavigate('practice')}>Practice with scenarios</Button>
+          <Button variant="secondary" onClick={() => show(null)}>
             Back to all scams
-          </BigButton>
+          </Button>
         </div>
       </article>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <PageTitle
-        icon="📘"
+    <div>
+      <PageHeader
         title="Learn to Spot a Scam"
-        subtitle="Short, plain guides. Scammers are professionals at manipulation, so there is no shame in learning their tricks."
+        lead="Short, plain guides to the scams people encounter most, and the tactics behind them."
       />
 
-      <div role="tablist" aria-label="Learning topics" className="flex flex-col gap-3 sm:flex-row">
+      <div role="tablist" aria-label="Learning topics" className="mb-6 flex border-b border-line" style={{ borderBottomWidth: 'var(--bw)' }}>
         {([
-          ['scams', 'Types of scams'],
-          ['tactics', 'How scammers trick you'],
+          ['scams', 'Common scams'],
+          ['tactics', 'How scammers manipulate you'],
         ] as Array<[Tab, string]>).map(([id, label]) => (
           <button
             key={id}
@@ -105,8 +102,8 @@ export const LearnPage: React.FC<LearnPageProps> = ({ initialScamId, onNavigate 
             aria-controls={`panel-${id}`}
             type="button"
             onClick={() => setTab(id)}
-            className={`min-h-[3.5rem] flex-1 cursor-pointer rounded-xl border-2 px-5 py-3 text-xl font-extrabold ${
-              tab === id ? 'border-brand bg-brand text-on-brand' : 'border-line bg-card text-ink hover:bg-brand-soft'
+            className={`-mb-px min-h-[2.9rem] cursor-pointer border-b-[3px] px-4 text-[0.97rem] ${
+              tab === id ? 'border-brand font-bold text-brand' : 'border-transparent font-medium hover:border-line-strong hover:text-brand'
             }`}
           >
             {label}
@@ -115,43 +112,59 @@ export const LearnPage: React.FC<LearnPageProps> = ({ initialScamId, onNavigate 
       </div>
 
       {tab === 'scams' ? (
-        <div id="panel-scams" role="tabpanel" aria-labelledby="tab-scams" className="grid gap-4 md:grid-cols-2">
-          {SCAM_TYPES.map((s) => (
-            <Card key={s.id} as="article" className="flex flex-col">
-              <h2 className="text-2xl font-extrabold">
-                <span aria-hidden="true" className="mr-2">
-                  {s.icon}
-                </span>
-                {s.name}
-              </h2>
-              <p className="mb-4 mt-2 flex-1 text-lg text-muted">{s.summary}</p>
-              <BigButton variant="secondary" onClick={() => show(s.id)} aria-label={`Read about ${s.name}`}>
-                Read more →
-              </BigButton>
-            </Card>
-          ))}
+        <div id="panel-scams" role="tabpanel" aria-labelledby="tab-scams">
+          <label htmlFor="scam-search" className="t-label">
+            Search scams
+          </label>
+          <input
+            id="scam-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="For example: bank, gift cards, grandchild"
+            autoComplete="off"
+            className="field mb-5 sm:max-w-md"
+          />
+          {matches.length === 0 ? (
+            <p role="status">No guides match “{query}”. Try a shorter word, such as “bank” or “gift”.</p>
+          ) : (
+            <ul className="divided rounded-md border border-line" style={{ borderWidth: 'var(--bw)' }}>
+              {matches.map((s) => (
+                <li key={s.id}>
+                  <button
+                    type="button"
+                    onClick={() => show(s.id)}
+                    className="flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-3 text-left hover:bg-brand-soft"
+                  >
+                    <span>
+                      <span className="block font-semibold">{s.name}</span>
+                      <span className="t-small block">{s.summary}</span>
+                    </span>
+                    <ChevronRight size={20} className="flex-shrink-0 text-muted" aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       ) : (
-        <div id="panel-tactics" role="tabpanel" aria-labelledby="tab-tactics" className="space-y-4">
-          <p className="text-xl text-muted">
-            Almost every scam, whether it is an email, a call, or a text, uses the same few tricks. Learn these and you can
-            spot almost any of them.
+        <div id="panel-tactics" role="tabpanel" aria-labelledby="tab-tactics">
+          <p className="mb-4 max-w-2xl">
+            Nearly every scam, whether it arrives as an email, a call, or a text, relies on the same few tactics. Learn to
+            recognize them and most scams become easier to spot.
           </p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <ul className="divided">
             {TECHNIQUE_LIST.map((t) => (
-              <Card key={t.id} as="article">
-                <h2 className="text-2xl font-extrabold text-brand">
-                  <span aria-hidden="true" className="mr-2">
-                    {t.icon}
-                  </span>
-                  {t.name}
-                </h2>
-                <p className="mt-2 text-xl font-semibold">“{t.tagline}”</p>
-                <p className="mt-3 text-lg">{t.explain}</p>
-                <p className="mt-3 text-lg font-bold">What helps: {t.counter}</p>
-              </Card>
+              <li key={t.id} className="py-4 first:pt-0">
+                <h2 className="t-sub">{t.name}</h2>
+                <p className="mt-1 max-w-2xl italic text-muted">{t.tagline}</p>
+                <p className="mt-2 max-w-2xl">{t.explain}</p>
+                <p className="mt-1 max-w-2xl">
+                  <strong className="font-semibold">What helps:</strong> {t.counter}
+                </p>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </div>

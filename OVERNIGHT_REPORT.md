@@ -8,6 +8,42 @@ The existing Gmail-style "Friendly Web Safety" email checker was rebuilt into **
 
 Final state: `npx tsc --noEmit` passes, `vite build` passes, and every demo flow below was exercised in a real browser (Chrome) against the running app.
 
+## UI/UX redesign (second pass)
+
+The first pass delivered the functionality with a colorful, emoji-heavy "card" interface. This pass redesigned how everything looks and is laid out, without removing any feature.
+
+**Direction:** a restrained application, in the spirit of a bank security center or account-settings page: white surface on a light gray canvas, one deep security-blue brand color plus success / warning / danger semantic colors, thin borders instead of shadows, 6-8 px corners, left-aligned content, sections separated by spacing, typography and hairline rules rather than by colored boxes.
+
+**Design system (`src/index.css`, `src/components/ui.tsx`):**
+- Color, radius and border tokens defined once (`@theme` + CSS variables). High contrast mode swaps the palette and thickens borders through the same variables.
+- A real type scale (page 1.6 rem, section 1.2 rem, sub 1.02 rem, body 1 rem, small 0.9 rem on an 18 px base) and shared component classes: `.btn` (primary / secondary / danger / link), `.field`, `.callout` (info / ok / warn / danger), `.surface`, `.section`, `.bullets`, `.steps`, `.risk-label`.
+- Shared React primitives: `Button`, `ButtonLink`, `PageHeader`, `Section`, `Callout`, `Bullets`, `Steps`, `BackLink`, `RiskLabel`.
+- Icons come from `lucide-react`, which was already a project dependency (nothing new was added). Emoji were removed from the interface; icons appear only next to words.
+
+**Application shell:** a slim header with the brand on the left and one **Accessibility** button on the right that opens a compact settings panel (text size, high contrast, increased spacing, reduced motion, reset). Navigation is a quiet tab row with an underline on the current page; below the large breakpoint it becomes a **Menu** button. Footer is one short line plus the FTC link.
+
+**Pages redesigned (all of them):**
+- **Check a Message:** a form view (large textarea, optional sender details, one primary button, examples as a divided list) and a separate **Message assessment** view. The assessment is ordered: verdict banner, what we noticed, what to do next, ask someone you trust, check it safely, how the message tries to influence you, the message itself, optional details.
+- **Interruption:** a restrained dialog titled "Before you continue" with a warning icon, the top three signals, three stop rules, and three actions. No oversized red screen.
+- **Ask someone you trust:** a plain section with a clear note that nothing is sent, an editable message, Copy / Open in email app / Open in text app.
+- **Pause Before You Pay:** now a guided questionnaire (nine questions, one at a time, Yes / No / I'm not sure, progress bar, Back / Next), ending in a clear assessment.
+- **Learn:** search, a divided list of scams, tabs for "Common scams" and "How scammers manipulate you", and a detail view with the five required sections.
+- **Would You Trust This?:** one scenario at a time with a quoted message, plain answer options, and a concise explanation after the choice.
+- **Home:** a short application-style start page (title, tagline, two actions, four-line "how it protects you", where to start, about the name).
+
+**Copy:** removed cheerful filler and most reassurance banners ("You are completely safe", "Let's take a closer look" and similar); the tone is calm and specific.
+
+**Accessibility kept and improved:** same 18 px base and the three text sizes (now 18 / 20.5 / 24 px), high contrast, spacing, reduced motion, focus rings, skip link, focus moved to headings on navigation, trapped-focus dialogs, labeled radios and fieldsets, live regions. The accessibility settings are now one findable button instead of a permanent bar.
+
+**Verified in the browser (Chrome, dev server):** Home, Check a Message, the demo message through to the interruption and assessment, trusted-message generation, Pause Before You Pay start to result, Learn list and a detail page, Would You Trust This?, the Accessibility panel, and Extra large text with High contrast on the high-risk assessment. **Responsive:** rendered at 1024, 820 and 390 px widths (in iframes, because the browser tool could not resize the window), including with Extra large text and High contrast: no horizontal overflow, tab row wraps at 1024 with large text, Menu appears below 1024, header buttons stack when space runs out, dialog fits at 390 px.
+
+**Bugs found by this pass and fixed:** header controls overflowed horizontally at 390 px; the same evidence quote could appear twice when two rules matched one line (now one quote per source line); unselected options in Practice were faded with opacity, weakening contrast (now a muted style); duplicated "assessment" headings.
+
+**Not done / still open after the redesign:**
+- Real phone and real screen-reader testing. Layouts were checked at phone width in the browser, not on a device.
+- `icon` fields (emoji) remain in `src/data/*.ts`, unused by the interface. Harmless; a cleanup candidate.
+- The mobile and tablet checks used an iframe and DOM measurements for overflow; I looked at screenshots for desktop and phone width but not for every page at every size.
+
 ## Features completed
 
 | # | Feature | Status |
@@ -18,10 +54,10 @@ Final state: `npx tsc --noEmit` passes, `vite build` passes, and every demo flow
 | 4 | Learn to Spot a Scam (14 scam guides, 8 manipulation tactics) | Done |
 | 5 | Would You Trust This? (6 scenarios, shuffled answers, non-shaming feedback) | Done |
 | 6 | Teach manipulation techniques, tied to real analysis results | Done (named tactics with plain explanations appear on every result and in Learn) |
-| 7 | Pause Before You Pay (10 questions) | Done |
+| 7 | Pause Before You Pay (9 guided questions) | Done |
 | 8 | Safe verification guidance (10 claim types) | Done |
 | - | WhatsItToYa? branding on all user-facing text and `<title>` / metadata | Done |
-| - | Accessibility bar and large-by-default design | Done |
+| - | Accessibility panel and large-by-default design | Done |
 | - | `HACKATHON_DEMO.md`, `OVERNIGHT_REPORT.md`, `DEMO_SCRIPT.txt` | Done |
 
 ## Files added
@@ -59,9 +95,9 @@ Final state: `npx tsc --noEmit` passes, `vite build` passes, and every demo flow
 
 ## Accessibility improvements
 
-- 18 px base text (larger than the browser default), with A / A+ / A++ buttons (18 / 21 / 25 px); every size uses rem units.
+- 18 px base text (larger than the browser default), with Standard / Large / Extra large options (18 / 20.5 / 24 px); every size uses rem units.
 - High contrast mode, "more spacing" mode, "less motion" mode (also honors the OS `prefers-reduced-motion`). Choices persist on the device.
-- Large buttons (at least 3.5 rem tall) with words, not just icons. Risk level is shown as text plus an icon, never color alone.
+- Buttons at least 2.75 rem (about 50 px) tall, with words rather than icons alone. Risk level is shown as text plus an icon, never color alone.
 - Visible 4 px focus ring everywhere; skip link; focus moves to the page heading on navigation; browser Back/Forward work.
 - Dialogs: focus moves in, Tab is trapped, Escape closes, focus returns to the opener.
 - Radio inputs for Pause Before You Pay, labeled fieldsets/legends, `aria-live` regions for loading, copy status and scenario feedback.
@@ -84,8 +120,9 @@ Final state: `npx tsc --noEmit` passes, `vite build` passes, and every demo flow
 ## Known issues and limitations
 
 - **Gemini/AI path was NOT tested** (no API key available). The code path is the original one with stricter prompts. Model names in `server.ts` (`gemini-3.8-flash`, `gemini-3.1-flash-lite`) come from the original project and were not verified. The app falls back to built-in checks if the call fails. Test it with your own key before showing any AI feature.
-- **Phone-width layout was not verified.** The browser window could not be resized below ~1700 px in my tooling, so mobile relies on the responsive Tailwind classes only. No horizontal scrolling was seen at desktop widths with A++ text and high contrast.
+- **Phone layouts were checked in the browser but not on a real device.** The browser window could not be resized in my tooling, so 390 / 820 / 1024 px layouts were rendered in iframes and measured for overflow (none found, including Extra large text and High contrast).
 - **No real screen-reader testing** (NVDA/VoiceOver). Semantics, labels, live regions and keyboard behavior were implemented and partially checked through the DOM, not through assistive technology.
+- **The successful "Copy message" path was not confirmed.** In my automated browser run the clipboard was blocked (scripted clicks are not real user gestures); the app correctly showed its "Your browser blocked copying" fallback message. Test the copy button once by hand in the browser you will present with.
 - **No automated test suite exists** in the project, and I did not add one. Verification was the probe script (not committed) and manual browser runs.
 - The signal engine is **rule-based and English-only**. Expect false negatives (a polished scam with no trigger phrases can come out LOW CONCERN) and occasional false positives. This is why the lowest level never says "safe".
 - The original analyzer treats "sender domain equals link domain" as a verified match. For a made-up lookalike domain that matches its own link (like the demo's `lakeshore-secure-verify.com`), the original analyzer scores low. The new shield compensates with a "made-up sending address" rule, but the legacy analyzer logic itself was not changed.
@@ -132,4 +169,5 @@ npm run build        # production build to dist/
 ## Git commits created
 
 - `fc09871` Rebuild app as WhatsItToYa? social engineering shield
-- A final commit adding `HACKATHON_DEMO.md`, `OVERNIGHT_REPORT.md`, `DEMO_SCRIPT.txt` and the README update (see `git log`)
+- `986425c` Add demo script, hackathon brief, overnight report, README
+- A final commit for the UI/UX redesign and the updated docs (see `git log`)

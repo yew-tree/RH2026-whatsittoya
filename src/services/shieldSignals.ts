@@ -370,7 +370,8 @@ function uniqueSnippets(text: string, patterns: RegExp[], max = 3): string[] {
       const lineEnd = text.indexOf('\n', m.index + m[0].length);
       const end = Math.min(lineEnd === -1 ? text.length : lineEnd, m.index + m[0].length + 60);
       const snippet = text.slice(start, end).replace(/\s+/g, ' ').trim();
-      const key = snippet.toLowerCase();
+      // One quote per source line, even when several patterns match it.
+      const key = String(text.lastIndexOf('\n', m.index) + 1);
       if (!seen.has(key)) {
         seen.add(key);
         found.push(snippet.length > 140 ? m[0] : snippet);
@@ -568,7 +569,7 @@ export function assessMessage(input: ShieldInput, analysis: OverallAnalysisResul
   if (level === 'HIGH') {
     headline = 'Please stop and check before you do anything';
     summary =
-      'This message has several warning signs that scammers use to pressure people into sending money or information. You have not done anything wrong by reading it. Pause, and use the steps below to verify.';
+      'This message has several warning signs that scammers use to pressure people into sending money or information. Pause, and use the steps below to verify it before you act.';
   } else if (level === 'CAREFUL') {
     headline = 'A few things here are worth double-checking';
     summary =

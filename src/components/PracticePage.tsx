@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { SCENARIOS } from '../data/scenarios';
 import { TECHNIQUES } from '../data/techniques';
 import { PageId } from './SiteHeader';
-import { BigButton, BulletList, Card, PageTitle, SectionHeading } from './ui';
+import { Bullets, Button, PageHeader, Section } from './ui';
 
 interface PracticePageProps {
   onNavigate: (page: PageId) => void;
@@ -17,11 +17,11 @@ function shuffled<T>(items: T[]): T[] {
   return copy;
 }
 
+const newOrders = () => Object.fromEntries(SCENARIOS.map((s) => [s.id, shuffled(s.choices.map((c) => c.id))]));
+
 export const PracticePage: React.FC<PracticePageProps> = ({ onNavigate }) => {
   // Mix up the order of the answers so the safe choice is not always in the same place.
-  const [orders, setOrders] = useState<Record<string, string[]>>(() =>
-    Object.fromEntries(SCENARIOS.map((s) => [s.id, shuffled(s.choices.map((c) => c.id))]))
-  );
+  const [orders, setOrders] = useState<Record<string, string[]>>(newOrders);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [finished, setFinished] = useState(false);
@@ -37,17 +37,14 @@ export const PracticePage: React.FC<PracticePageProps> = ({ onNavigate }) => {
     if (choiceId) return; // one answer per scenario keeps the lesson clear
     setPicked((prev) => ({ ...prev, [scenario.id]: id }));
     window.setTimeout(() => {
-      feedbackRef.current?.scrollIntoView({ block: 'start' });
+      feedbackRef.current?.scrollIntoView({ block: 'nearest' });
       feedbackRef.current?.querySelector<HTMLElement>('h2')?.focus();
     }, 50);
   };
 
   const next = () => {
-    if (index + 1 >= total) {
-      setFinished(true);
-    } else {
-      setIndex(index + 1);
-    }
+    if (index + 1 >= total) setFinished(true);
+    else setIndex(index + 1);
     window.scrollTo({ top: 0 });
     window.setTimeout(() => document.getElementById('page-title')?.focus(), 30);
   };
@@ -56,139 +53,132 @@ export const PracticePage: React.FC<PracticePageProps> = ({ onNavigate }) => {
     setIndex(0);
     setPicked({});
     setFinished(false);
-    setOrders(Object.fromEntries(SCENARIOS.map((s) => [s.id, shuffled(s.choices.map((c) => c.id))])));
+    setOrders(newOrders());
     window.scrollTo({ top: 0 });
   };
 
   if (finished) {
     return (
-      <div className="space-y-6">
-        <PageTitle icon="🎉" title="Nice work practicing" subtitle="Every scenario here is based on real scams that fool smart, careful people every day." />
-        <Card tone="brand" aria-labelledby="summary-heading">
-          <SectionHeading id="summary-heading">
-            You chose the safest response {safeCount} out of {total} times
-          </SectionHeading>
-          <p className="text-xl">
-            There is no pass or fail. Practice is how these tricks become easy to recognize. The safest moves were nearly
-            always the same: stop, do not use the contact details in the message, and check another way.
-          </p>
-        </Card>
-        <Card aria-labelledby="recap-heading">
-          <SectionHeading id="recap-heading">What to remember</SectionHeading>
-          <BulletList
-            className="text-xl"
+      <div className="wity-fade-in">
+        <PageHeader
+          title="Practice summary"
+          lead="Every scenario is modeled on real scams that deceive careful people."
+        />
+        <p className="max-w-2xl text-[1.1rem]">
+          You chose the safest response in <strong>{safeCount} of {total}</strong> scenarios. There is no passing score.
+          The aim is to make the pattern familiar.
+        </p>
+
+        <Section id="remember" title="What to remember">
+          <Bullets
+            className="max-w-2xl"
             items={[
-              'Pause. Real requests can wait.',
+              'Pause. A genuine request can wait.',
               'Contact the person or company yourself, using details you already have or find on your own.',
-              'Never pay with gift cards, crypto, or wire transfers because someone contacted you.',
+              'Never pay with gift cards, cryptocurrency, or wire transfers because someone contacted you.',
               'Tell someone you trust, even if you were asked to keep it secret.',
             ]}
           />
-        </Card>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <BigButton onClick={restart}>Practice again</BigButton>
-          <BigButton variant="secondary" onClick={() => onNavigate('learn')}>
-            📘 Learn about each scam
-          </BigButton>
-          <BigButton variant="secondary" onClick={() => onNavigate('check')}>
-            🔍 Check a message
-          </BigButton>
+        </Section>
+
+        <div className="section flex flex-col gap-2 sm:flex-row">
+          <Button onClick={restart}>Practice again</Button>
+          <Button variant="secondary" onClick={() => onNavigate('learn')}>
+            Learn about each scam
+          </Button>
+          <Button variant="secondary" onClick={() => onNavigate('check')}>
+            Check a Message
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <PageTitle
-        icon="🎯"
+    <div>
+      <PageHeader
         title="Would You Trust This?"
-        subtitle="Realistic make-believe scams. Choose what you would do. There are no wrong answers here, only things to learn."
+        lead="Realistic, made-up scam scenarios. Choose what you would do, then see what to look for."
       />
 
-      <p className="text-lg font-extrabold uppercase tracking-wide text-muted" aria-live="polite">
+      <p className="t-meta mb-3" aria-live="polite">
         Scenario {index + 1} of {total}
       </p>
+      <h2 id="scenario-title" className="t-section">
+        {scenario.title}
+      </h2>
+      <p className="t-small mt-0.5">{scenario.channel}. This message is fictional.</p>
 
-      <Card aria-labelledby="scenario-title">
-        <h2 id="scenario-title" className="text-2xl font-extrabold">
-          <span aria-hidden="true" className="mr-2">
-            {scenario.icon}
-          </span>
-          {scenario.title}
-        </h2>
-        <p className="mt-1 text-lg font-bold text-muted">{scenario.channel} (made-up example)</p>
-        <blockquote className="mt-4 whitespace-pre-wrap rounded-2xl border-l-8 border-brand bg-paper p-5 text-xl leading-relaxed">
-          {scenario.message}
-        </blockquote>
-      </Card>
+      <blockquote
+        className="mt-4 whitespace-pre-wrap border-l-4 border-line-strong bg-subtle px-5 py-4 text-[1.05rem] leading-relaxed"
+        aria-labelledby="scenario-title"
+      >
+        {scenario.message}
+      </blockquote>
 
-      <fieldset className="space-y-3">
-        <legend className="mb-3 text-2xl font-extrabold">{scenario.question}</legend>
-        {orders[scenario.id].map((id) => scenario.choices.find((c) => c.id === id)!).map((c) => {
-          const isPicked = choiceId === c.id;
-          return (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => choose(c.id)}
-              aria-pressed={isPicked}
-              disabled={Boolean(choiceId) && !isPicked}
-              className={`w-full cursor-pointer rounded-2xl border-2 p-5 text-left text-xl font-bold disabled:cursor-default ${
-                isPicked
-                  ? c.safe
-                    ? 'border-ok bg-ok-soft'
-                    : 'border-warn bg-warn-soft'
-                  : 'border-line bg-card hover:border-brand hover:bg-brand-soft disabled:opacity-60'
-              }`}
-            >
-              {isPicked && <span aria-hidden="true">{c.safe ? '✔ ' : '➜ '}</span>}
-              {c.label}
-            </button>
-          );
-        })}
+      <fieldset className="mt-6">
+        <legend className="t-sub mb-3 text-[1.1rem]">{scenario.question}</legend>
+        <div className="max-w-2xl space-y-2">
+          {orders[scenario.id].map((id) => scenario.choices.find((c) => c.id === id)!).map((c) => {
+            const isPicked = choiceId === c.id;
+            const state = isPicked
+              ? c.safe
+                ? 'border-ok bg-ok-soft'
+                : 'border-warn bg-warn-soft'
+              : choiceId
+              ? 'border-line bg-subtle text-muted'
+              : 'border-line-strong bg-surface';
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => choose(c.id)}
+                aria-pressed={isPicked}
+                disabled={Boolean(choiceId) && !isPicked}
+                className={`block w-full cursor-pointer rounded-md border px-4 py-3 text-left disabled:cursor-default ${state} ${
+                  choiceId ? '' : 'hover:border-brand hover:bg-brand-soft'
+                }`}
+                style={{ borderWidth: 'var(--bw)' }}
+              >
+                {isPicked && <span className="t-meta mb-0.5 block">Your choice</span>}
+                <span className={isPicked ? 'font-semibold' : ''}>{c.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </fieldset>
 
-      <div ref={feedbackRef} className="scroll-mt-4" aria-live="polite">
+      <div ref={feedbackRef} aria-live="polite">
         {choice && (
-          <div className="wity-fade-in space-y-4">
-            <Card tone={choice.safe ? 'ok' : 'warn'} aria-labelledby="feedback-heading">
-              <h2 id="feedback-heading" tabIndex={-1} className="text-3xl font-extrabold focus:outline-none">
-                {choice.safe ? '✔ A safe choice' : 'Let’s take a closer look'}
+          <div className="wity-fade-in mt-6">
+            <section aria-labelledby="feedback-heading" className={`callout ${choice.safe ? 'callout-ok' : 'callout-warn'}`}>
+              <h2 id="feedback-heading" tabIndex={-1} className="t-sub focus:outline-none">
+                {choice.safe ? 'This is the safest response' : 'This response carries risk'}
               </h2>
-              <p className="mt-2 text-xl">{choice.feedback}</p>
-            </Card>
+              <p className="mt-1 max-w-2xl">{choice.feedback}</p>
+            </section>
 
-            <Card aria-labelledby="signs-heading">
-              <SectionHeading id="signs-heading">Warning signs you could notice</SectionHeading>
-              <BulletList items={scenario.warningSigns} marker="⚠" className="text-xl" />
-            </Card>
+            <Section id="signs" title="Warning signs">
+              <Bullets items={scenario.warningSigns} className="max-w-2xl" />
+            </Section>
 
-            <Card aria-labelledby="tricks-heading">
-              <SectionHeading id="tricks-heading">The tricks being used</SectionHeading>
-              <ul className="space-y-3">
+            <Section id="tactics" title="Tactics used">
+              <ul className="space-y-2">
                 {scenario.techniques.map((t) => (
-                  <li key={t} className="text-lg">
-                    <strong className="text-brand">
-                      <span aria-hidden="true" className="mr-1">
-                        {TECHNIQUES[t].icon}
-                      </span>
-                      {TECHNIQUES[t].name}:
-                    </strong>{' '}
-                    {TECHNIQUES[t].explain}
+                  <li key={t} className="max-w-2xl">
+                    <strong className="font-semibold">{TECHNIQUES[t].name}.</strong> {TECHNIQUES[t].explain}
                   </li>
                 ))}
               </ul>
-            </Card>
+            </Section>
 
-            <Card tone="brand" aria-labelledby="instead-heading">
-              <SectionHeading id="instead-heading">What to do instead</SectionHeading>
-              <BulletList items={scenario.doInstead} marker="✔" className="text-xl" />
-            </Card>
+            <Section id="instead" title="What to do instead">
+              <Bullets items={scenario.doInstead} className="max-w-2xl" />
+            </Section>
 
-            <BigButton onClick={next} className="text-xl">
-              {index + 1 >= total ? 'See my summary →' : 'Next scenario →'}
-            </BigButton>
+            <div className="section">
+              <Button onClick={next}>{index + 1 >= total ? 'See summary' : 'Next scenario'}</Button>
+            </div>
           </div>
         )}
       </div>

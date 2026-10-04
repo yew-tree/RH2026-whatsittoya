@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { EXAMPLES } from '../data/examples';
 import { MessageChecker } from '../hooks/useMessageChecker';
 import { ResultPanel } from './ResultPanel';
-import { BigButton, Card, PageTitle } from './ui';
+import { Button, PageHeader, Section } from './ui';
 
 interface CheckPageProps {
   checker: MessageChecker;
@@ -11,143 +12,130 @@ interface CheckPageProps {
 
 export const CheckPage: React.FC<CheckPageProps> = ({ checker, onOpenLearn }) => {
   const { text, setText, sender, setSender, replyTo, setReplyTo, loading, error, result, run, loadExample, clear } = checker;
-  const resultRef = useRef<HTMLDivElement>(null);
   const hadResult = useRef(false);
 
-  // Bring the results into view once they arrive.
+  // When results arrive, start at the top of the assessment.
   useEffect(() => {
-    if (result && !hadResult.current) {
-      resultRef.current?.scrollIntoView({ block: 'start' });
-    }
+    if (result && !hadResult.current) window.scrollTo({ top: 0 });
     hadResult.current = Boolean(result);
   }, [result]);
 
+  if (result && !loading) {
+    return (
+      <ResultPanel
+        key={result.analysis.analyzedAt + result.input.body.length}
+        result={result}
+        onOpenLearn={onOpenLearn}
+        onCheckAnother={() => {
+          clear();
+          window.scrollTo({ top: 0 });
+          window.setTimeout(() => document.getElementById('message-text')?.focus(), 30);
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="space-y-8">
-      <PageTitle
-        icon="🔍"
+    <div>
+      <PageHeader
         title="Check a Message"
-        subtitle="Paste an email or text message you are unsure about. We will show you what we noticed, and what to do next."
+        lead="Paste an email or text message you are unsure about. We will explain what we notice and what you can do next."
       />
 
-      <Card aria-labelledby="paste-heading">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void run();
-          }}
-          noValidate
-        >
-          <label id="paste-heading" htmlFor="message-text" className="mb-2 block text-2xl font-extrabold">
-            Paste the message here
-          </label>
-          <p id="paste-help" className="mb-3 text-lg text-muted">
-            You can paste a whole email, including the “From:” and “Subject:” lines, or just a text message. Nothing is
-            sent to anyone.
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void run();
+        }}
+        noValidate
+      >
+        <label htmlFor="message-text" className="t-label">
+          Message
+        </label>
+        <textarea
+          id="message-text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={11}
+          aria-describedby={error ? 'paste-help paste-error' : 'paste-help'}
+          aria-invalid={Boolean(error)}
+          placeholder="Paste the message here"
+          className="field"
+        />
+        <p id="paste-help" className="t-small mt-2">
+          Paste a whole email, including the From and Subject lines, or just the text of a message. Nothing is sent to
+          anyone.
+        </p>
+
+        {error && (
+          <p id="paste-error" role="alert" className="callout callout-danger mt-3 font-semibold">
+            {error}
           </p>
-          <textarea
-            id="message-text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={10}
-            aria-describedby={error ? 'paste-help paste-error' : 'paste-help'}
-            aria-invalid={Boolean(error)}
-            placeholder="Paste the suspicious message here…"
-            className="w-full rounded-xl border-2 border-line bg-card p-4 text-lg leading-relaxed"
-          />
+        )}
 
-          {error && (
-            <p id="paste-error" role="alert" className="mt-3 rounded-xl border-2 border-danger bg-danger-soft p-3 text-lg font-bold text-danger">
-              {error}
-            </p>
-          )}
-
-          <details className="mt-4 rounded-xl border-2 border-line p-4">
-            <summary className="cursor-pointer text-lg font-bold">Add who sent it (optional)</summary>
-            <p className="mb-3 mt-2 text-base text-muted">
-              If you pasted the “From:” line above, you can skip this. Adding the sender helps us check whether the
-              address matches who they claim to be.
-            </p>
-            <label htmlFor="sender-field" className="mb-1 block text-lg font-bold">
-              Sender (name or email address)
-            </label>
-            <input
-              id="sender-field"
-              type="text"
-              value={sender}
-              onChange={(e) => setSender(e.target.value)}
-              autoComplete="off"
-              className="mb-3 min-h-[3.25rem] w-full rounded-xl border-2 border-line bg-card px-4 text-lg"
-            />
-            <label htmlFor="replyto-field" className="mb-1 block text-lg font-bold">
-              Reply-to address (if you can see one)
-            </label>
-            <input
-              id="replyto-field"
-              type="text"
-              value={replyTo}
-              onChange={(e) => setReplyTo(e.target.value)}
-              autoComplete="off"
-              className="min-h-[3.25rem] w-full rounded-xl border-2 border-line bg-card px-4 text-lg"
-            />
-          </details>
-
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <BigButton type="submit" disabled={loading} className="text-xl">
-              {loading ? 'Checking…' : '🔍 Check this message'}
-            </BigButton>
-            {(text || result) && (
-              <BigButton variant="quiet" onClick={clear} disabled={loading}>
-                Clear and start over
-              </BigButton>
-            )}
+        <details className="mt-5">
+          <summary className="btn-link cursor-pointer">Sender information (optional)</summary>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <p className="t-small">
+                If you pasted the From line above, you can skip this. Adding the sender helps us check whether the address
+                matches who the message claims to be.
+              </p>
+            </div>
+            <div>
+              <label htmlFor="sender-field" className="t-label">
+                Sender name or email address
+              </label>
+              <input id="sender-field" type="text" value={sender} onChange={(e) => setSender(e.target.value)} autoComplete="off" className="field" />
+            </div>
+            <div>
+              <label htmlFor="replyto-field" className="t-label">
+                Reply-to address
+              </label>
+              <input id="replyto-field" type="text" value={replyTo} onChange={(e) => setReplyTo(e.target.value)} autoComplete="off" className="field" />
+            </div>
           </div>
-        </form>
-      </Card>
+        </details>
 
-      {!result && !loading && (
-        <section aria-labelledby="examples-heading">
-          <h2 id="examples-heading" className="mb-2 text-2xl font-extrabold">
-            Or try an example
-          </h2>
-          <p className="mb-4 text-lg text-muted">These are made-up messages, safe to try. Pick one to see how it works.</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            {EXAMPLES.map((ex) => (
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Button type="submit" disabled={loading}>
+            {loading && <span className="wity-spinner" aria-hidden="true" />}
+            {loading ? 'Checking…' : 'Check message'}
+          </Button>
+          {text && !loading && (
+            <Button variant="secondary" onClick={clear}>
+              Clear
+            </Button>
+          )}
+          <span role="status" aria-live="polite" className="t-small">
+            {loading ? 'Looking at the wording, the links, and who sent it.' : ''}
+          </span>
+        </div>
+      </form>
+
+      <Section id="examples" title="Try an example">
+        <p className="t-small mb-3 max-w-2xl">These are made-up messages. Select one to see how WhatsItToYa? responds.</p>
+        <ul className="divided rounded-md border border-line" style={{ borderWidth: 'var(--bw)' }}>
+          {EXAMPLES.map((ex) => (
+            <li key={ex.id}>
               <button
-                key={ex.id}
                 type="button"
                 onClick={() => loadExample(ex.raw)}
-                className="cursor-pointer rounded-2xl border-2 border-line bg-card p-4 text-left hover:border-brand hover:bg-brand-soft"
+                disabled={loading}
+                className="flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-3 text-left hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <span className="block text-sm font-extrabold uppercase tracking-wide text-muted">{ex.kind}</span>
-                <span className="mt-1 block text-xl font-bold text-brand">{ex.title}</span>
-                <span className="mt-1 block text-base text-muted">{ex.description}</span>
+                <span className="min-w-0">
+                  <span className="block font-semibold">{ex.title}</span>
+                  <span className="t-small block">
+                    {ex.kind}. {ex.description}
+                  </span>
+                </span>
+                <ChevronRight size={20} className="flex-shrink-0 text-muted" aria-hidden="true" />
               </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <div ref={resultRef} className="scroll-mt-4">
-        {loading && (
-          <Card tone="brand" role="status" aria-live="polite">
-            <p className="text-2xl font-extrabold">Checking your message…</p>
-            <p className="mt-2 text-lg">Looking at the wording, the links, and who sent it. This usually takes a few seconds.</p>
-          </Card>
-        )}
-        {result && !loading && (
-          <ResultPanel
-            key={result.analysis.analyzedAt + result.input.body.length}
-            result={result}
-            onOpenLearn={onOpenLearn}
-            onCheckAnother={() => {
-              clear();
-              window.scrollTo({ top: 0 });
-              document.getElementById('message-text')?.focus();
-            }}
-          />
-        )}
-      </div>
+            </li>
+          ))}
+        </ul>
+      </Section>
     </div>
   );
 };

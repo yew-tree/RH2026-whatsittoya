@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TechniqueId, TECHNIQUES } from '../data/techniques';
 import { ClaimType } from '../data/verification';
 import { RiskLevel } from '../services/shieldSignals';
 import { TrustedVerification } from './TrustedVerification';
 import { VerificationGuide } from './VerificationGuide';
-import { BigButton, Card, LEVEL_STYLE, PageTitle, RiskBadge, SectionHeading } from './ui';
+import { Button, LEVEL, PageHeader, RiskLabel, Section, Steps } from './ui';
 
 interface Question {
   id: string;
@@ -22,12 +22,11 @@ interface Question {
 const QUESTIONS: Question[] = [
   {
     id: 'unexpected',
-    text: 'Did someone contact you unexpectedly?',
+    text: 'Did this person or organization contact you unexpectedly?',
     critical: false,
     weight: 1,
-    technique: 'trust',
     reasonPhrase: 'they contacted me out of the blue',
-    why: 'Most real requests do not arrive out of the blue. Scammers start the conversation so they control the story.',
+    why: 'Most genuine requests do not arrive out of the blue. Scammers start the conversation so that they control the story.',
   },
   {
     id: 'urgent',
@@ -36,16 +35,16 @@ const QUESTIONS: Question[] = [
     weight: 2,
     technique: 'urgency',
     reasonPhrase: 'they want me to act immediately',
-    why: TECHNIQUES.urgency.explain,
+    why: 'They are pressuring you to act immediately. Scammers create urgency because slowing down gives you time to notice warning signs.',
   },
   {
     id: 'threat',
-    text: 'Are they threatening you (arrest, a closed account, fees)?',
+    text: 'Are they threatening you with arrest, a closed account, or fees?',
     critical: false,
     weight: 2,
     technique: 'fear',
     reasonPhrase: 'they are threatening me',
-    why: TECHNIQUES.fear.explain,
+    why: 'They are trying to frighten you. Fear makes it hard to think clearly, which is what scammers count on.',
   },
   {
     id: 'secret',
@@ -54,76 +53,69 @@ const QUESTIONS: Question[] = [
     weight: 3,
     technique: 'secrecy',
     reasonPhrase: 'they asked me to keep it secret',
-    why: TECHNIQUES.secrecy.explain,
+    why: 'Secrecy cuts you off from the people most likely to spot the trick. Genuine organizations do not ask you to hide a request.',
   },
   {
     id: 'giftcards',
-    text: 'Are they asking for gift cards?',
+    text: 'Are they asking you to pay with gift cards?',
     critical: true,
     weight: 4,
     technique: 'payment',
     askPhrase: 'buy gift cards',
     reasonPhrase: 'they asked for gift cards',
-    why: 'Gift cards are not a real way to pay a bill, a fine, or a boss. Once the codes are shared, the money is almost impossible to get back.',
+    why: 'Gift cards are not a legitimate way to pay a bill, a fine, or an employer. Once the codes are shared, the money is almost impossible to recover.',
   },
   {
     id: 'crypto',
-    text: 'Are they asking for cryptocurrency (like Bitcoin)?',
+    text: 'Are they asking you to pay with cryptocurrency, such as Bitcoin?',
     critical: true,
     weight: 4,
     technique: 'payment',
     askPhrase: 'send cryptocurrency',
     reasonPhrase: 'they asked for cryptocurrency',
-    why: 'Crypto payments are hard to trace and cannot be reversed, which is why scammers ask for them.',
+    why: 'Cryptocurrency payments are hard to trace and cannot be reversed, which is why scammers ask for them.',
   },
   {
     id: 'wire',
-    text: 'Are they asking for a wire transfer or to move your money?',
+    text: 'Are they asking you to wire money, or move it to a “safe account”?',
     critical: true,
     weight: 4,
     technique: 'payment',
     askPhrase: 'send or move money',
     reasonPhrase: 'they asked me to send or move money',
-    why: 'Wire transfers are very hard to undo. Real banks never ask you to move money to a “safe account”.',
+    why: 'Wire transfers are very hard to undo. A real bank will never ask you to move your money to a “safe account”.',
   },
   {
-    id: 'nobank',
-    text: 'Are they telling you not to contact your bank?',
+    id: 'isolate',
+    text: 'Are they telling you not to contact your bank, family, or friends?',
     critical: true,
     weight: 3,
     technique: 'secrecy',
-    reasonPhrase: 'they told me not to contact my bank',
-    why: 'Your bank is the best place to check. Anyone who tells you to avoid it is hoping you will not find out the truth.',
-  },
-  {
-    id: 'nofamily',
-    text: 'Are they telling you not to contact your family or friends?',
-    critical: true,
-    weight: 3,
-    technique: 'secrecy',
-    reasonPhrase: 'they told me not to talk to family or friends',
-    why: 'Scammers cut people off from help. Family and friends are the ones most likely to spot the trick.',
+    reasonPhrase: 'they told me not to talk to my bank, family, or friends',
+    why: 'Scammers isolate people. Your bank, family, and friends are the best place to check, and anyone who tells you to avoid them is hoping you will not.',
   },
   {
     id: 'codes',
-    text: 'Are they asking for passwords or verification codes?',
+    text: 'Are they asking for a password or a verification code?',
     critical: true,
     weight: 4,
-    technique: 'authority',
     askPhrase: 'share a password or verification code',
     reasonPhrase: 'they asked for a password or code',
     why: 'A password or one-time code is the key to your account. Nobody legitimate will ask you to share one.',
   },
 ];
 
-const ANSWER_YES = 'yes';
-const ANSWER_NO = 'no';
-type Answer = typeof ANSWER_YES | typeof ANSWER_NO;
+type Answer = 'yes' | 'no' | 'unsure';
+const OPTIONS: Array<{ value: Answer; label: string }> = [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' },
+  { value: 'unsure', label: 'I’m not sure' },
+];
 
-function levelFor(yes: Question[]): RiskLevel {
+function levelFor(yes: Question[], unsureCount: number): RiskLevel {
   const points = yes.reduce((sum, q) => sum + q.weight, 0);
   if (yes.some((q) => q.critical) || points >= 4) return 'HIGH';
-  if (points >= 2) return 'CAREFUL';
+  if (points >= 2 || unsureCount >= 3) return 'CAREFUL';
   return 'LOW';
 }
 
@@ -133,198 +125,230 @@ interface PausePageProps {
 }
 
 export const PausePage: React.FC<PausePageProps> = ({ onNavigate, onOpenLearn }) => {
+  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const [claimType, setClaimType] = useState<ClaimType>('generic');
-  const resultRef = useRef<HTMLDivElement>(null);
+  const legendRef = useRef<HTMLLegendElement>(null);
+  const first = useRef(true);
 
-  const answeredCount = Object.keys(answers).length;
-  const yes = QUESTIONS.filter((q) => answers[q.id] === ANSWER_YES);
-  const level = levelFor(yes);
+  const total = QUESTIONS.length;
+  const q = QUESTIONS[step];
+  const current = answers[q.id];
 
-  const setAnswer = (id: string, value: Answer) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
-    setSubmitted(false);
-    setError(null);
-  };
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (answeredCount === 0) {
-      setError('Please answer at least one question so we can help.');
+  // Move focus to the new question so keyboard and screen-reader users hear it.
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
       return;
     }
-    setSubmitted(true);
-    window.setTimeout(() => {
-      resultRef.current?.scrollIntoView({ block: 'start' });
-      resultRef.current?.querySelector<HTMLElement>('h2')?.focus();
-    }, 50);
+    legendRef.current?.focus();
+  }, [step]);
+
+  const next = () => {
+    if (!current) return;
+    if (step + 1 >= total) {
+      setDone(true);
+      window.scrollTo({ top: 0 });
+      window.setTimeout(() => document.getElementById('pause-result')?.focus(), 30);
+    } else {
+      setStep(step + 1);
+    }
   };
 
-  const reset = () => {
+  const restart = () => {
+    setStep(0);
     setAnswers({});
-    setSubmitted(false);
-    setError(null);
+    setDone(false);
+    first.current = true;
     window.scrollTo({ top: 0 });
   };
 
-  const style = LEVEL_STYLE[level];
-  const techniquesFound = Array.from(new Set(yes.map((q) => q.technique).filter(Boolean))) as TechniqueId[];
+  if (done) {
+    const yes = QUESTIONS.filter((x) => answers[x.id] === 'yes');
+    const unsure = QUESTIONS.filter((x) => answers[x.id] === 'unsure');
+    const level = levelFor(yes, unsure.length);
+    const techniques = Array.from(new Set(yes.map((x) => x.technique).filter(Boolean))) as TechniqueId[];
+
+    return (
+      <div className="wity-fade-in">
+        <PageHeader title="Your assessment" lead="Based on your answers to Pause Before You Pay. This is guidance, not a verdict." />
+
+        <section aria-labelledby="pause-result" className={`callout ${LEVEL[level].callout}`}>
+          <RiskLabel level={level} />
+          {level === 'HIGH' ? (
+            <>
+              <h2 id="pause-result" tabIndex={-1} className="t-section mt-1.5 focus:outline-none">
+                Pause. Do not pay yet.
+              </h2>
+              <p className="mt-2 max-w-2xl">
+                Your answers show several warning signs commonly used in payment scams. This does not prove it is a scam, but
+                it is a strong reason to stop and verify the request independently before sending money or information.
+              </p>
+            </>
+          ) : level === 'CAREFUL' ? (
+            <>
+              <h2 id="pause-result" tabIndex={-1} className="t-section mt-1.5 focus:outline-none">
+                Slow down and double-check
+              </h2>
+              <p className="mt-2 max-w-2xl">
+                Your answers show a warning sign or two. Before you pay or share anything, verify the request independently
+                using the steps below.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 id="pause-result" tabIndex={-1} className="t-section mt-1.5 focus:outline-none">
+                No major warning signs in your answers
+              </h2>
+              <p className="mt-2 max-w-2xl">
+                That does not guarantee anything is genuine. If the request involves money or personal information and you
+                were not expecting it, verify it independently before you act.
+              </p>
+            </>
+          )}
+        </section>
+
+        {yes.length > 0 && (
+          <Section id="why" title="Why we say that">
+            <ul className="divided">
+              {yes.map((x) => (
+                <li key={x.id} className="py-4 first:pt-0">
+                  <h3 className="t-sub">{x.text}</h3>
+                  <p className="mt-1 max-w-2xl">{x.why}</p>
+                </li>
+              ))}
+            </ul>
+            {techniques.length > 0 && (
+              <p className="t-small mt-3">Tactics at work: {techniques.map((t) => TECHNIQUES[t].name).join(', ')}.</p>
+            )}
+          </Section>
+        )}
+
+        {unsure.length > 0 && (
+          <Section id="unsure" title="Questions you were not sure about">
+            <ul className="bullets max-w-2xl">
+              {unsure.map((x) => (
+                <li key={x.id}>{x.text}</li>
+              ))}
+            </ul>
+            <p className="t-small mt-2">If you are unsure, treat it as a reason to check before you act.</p>
+          </Section>
+        )}
+
+        <Section id="next" title="What to do next">
+          <Steps
+            className="max-w-2xl"
+            items={
+              level === 'LOW'
+                ? [
+                    'If anything feels off, pause and verify before paying.',
+                    'Use contact details you find yourself, not ones the other person gave you.',
+                    'If you are unsure, ask someone you trust.',
+                  ]
+                : [
+                    'Do not send money, gift cards, codes, or passwords yet.',
+                    'Contact the organization or person independently, using details you find yourself.',
+                    'Ask someone you trust to look at it with you.',
+                  ]
+            }
+          />
+        </Section>
+
+        {level !== 'LOW' && (
+          <TrustedVerification
+            id="pause-trusted"
+            context={{
+              asks: yes.filter((x) => x.askPhrase).map((x) => x.askPhrase!),
+              reasons: yes.map((x) => x.reasonPhrase).slice(0, 4),
+            }}
+          />
+        )}
+
+        <VerificationGuide id="pause-verify" type={claimType} onTypeChange={setClaimType} onOpenLearn={onOpenLearn} />
+
+        <Section id="have-message" title="Do you have the message?">
+          <p className="mb-3 max-w-2xl">Paste it into Check a Message and we will point out the warning signs in it.</p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button onClick={() => onNavigate('check')}>Check a Message</Button>
+            <Button variant="secondary" onClick={restart}>
+              Start over
+            </Button>
+          </div>
+        </Section>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
-      <PageTitle
-        icon="✋"
+    <div>
+      <PageHeader
         title="Pause Before You Pay"
-        subtitle="Someone asking you for money or information? Take one minute. Answer a few simple questions, and we will help you decide what to do next."
+        lead="Answer a few questions before you send money or information. It takes about a minute."
       />
 
-      <form onSubmit={submit} noValidate className="space-y-4">
-        {QUESTIONS.map((q, i) => (
-          <fieldset key={q.id} className="rounded-2xl border-2 border-line bg-card p-5">
-            <legend className="px-2 text-sm font-extrabold uppercase tracking-wide text-muted">
-              Question {i + 1} of {QUESTIONS.length}
-            </legend>
-            <p className="mb-4 text-2xl font-bold">{q.text}</p>
-            <div className="flex gap-3">
-              {([ANSWER_YES, ANSWER_NO] as Answer[]).map((value) => (
-                <label key={value} className="flex-1">
-                  <input
-                    type="radio"
-                    name={q.id}
-                    value={value}
-                    checked={answers[q.id] === value}
-                    onChange={() => setAnswer(q.id, value)}
-                    className="peer sr-only"
-                  />
-                  <span
-                    className={`flex min-h-[3.5rem] cursor-pointer items-center justify-center rounded-xl border-2 border-line bg-card px-4 text-xl font-extrabold peer-focus-visible:outline-4 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus ${
-                      value === ANSWER_YES
-                        ? 'peer-checked:border-danger peer-checked:bg-danger peer-checked:text-white'
-                        : 'peer-checked:border-brand peer-checked:bg-brand peer-checked:text-on-brand'
-                    }`}
-                  >
-                    {answers[q.id] === value ? '✔ ' : ''}
-                    {value === ANSWER_YES ? 'Yes' : 'No'}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        ))}
-
-        <div role="status" aria-live="polite" className="text-lg font-semibold text-muted">
-          {answeredCount} of {QUESTIONS.length} answered. If you are not sure, you can leave it blank.
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          next();
+        }}
+        noValidate
+      >
+        <div className="mb-5">
+          <div className="flex items-baseline justify-between">
+            <p className="t-meta" aria-live="polite">
+              Question {step + 1} of {total}
+            </p>
+          </div>
+          <div
+            role="progressbar"
+            aria-label="Progress"
+            aria-valuemin={1}
+            aria-valuemax={total}
+            aria-valuenow={step + 1}
+            className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-line"
+          >
+            <div className="h-full bg-brand transition-[width]" style={{ width: `${((step + 1) / total) * 100}%` }} />
+          </div>
         </div>
 
-        {error && (
-          <p role="alert" className="rounded-xl border-2 border-danger bg-danger-soft p-3 text-lg font-bold text-danger">
-            {error}
-          </p>
-        )}
+        <fieldset>
+          <legend ref={legendRef} tabIndex={-1} className="t-section mb-4 max-w-2xl focus:outline-none">
+            {q.text}
+          </legend>
+          <div className="max-w-md space-y-2">
+            {OPTIONS.map((o) => (
+              <label
+                key={o.value}
+                className={`flex min-h-[3rem] cursor-pointer items-center gap-3 rounded-md border px-4 py-2 hover:bg-brand-soft ${
+                  current === o.value ? 'border-brand bg-brand-soft font-semibold' : 'border-line-strong bg-surface'
+                }`}
+                style={{ borderWidth: 'var(--bw)' }}
+              >
+                <input
+                  type="radio"
+                  name={q.id}
+                  value={o.value}
+                  checked={current === o.value}
+                  onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: o.value }))}
+                  className="h-5 w-5 flex-shrink-0 accent-[var(--color-brand)]"
+                />
+                <span>{o.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <BigButton type="submit" className="text-xl">
-            See what to do
-          </BigButton>
-          {answeredCount > 0 && (
-            <BigButton variant="quiet" onClick={reset}>
-              Start over
-            </BigButton>
-          )}
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          <Button variant="secondary" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>
+            Back
+          </Button>
+          <Button type="submit" disabled={!current}>
+            {step + 1 >= total ? 'See result' : 'Next'}
+          </Button>
+          {answers[q.id] === undefined && <span className="t-small">Select an answer to continue.</span>}
         </div>
       </form>
-
-      <div ref={resultRef} className="scroll-mt-4">
-        {submitted && (
-          <div className="wity-fade-in space-y-6">
-            <section aria-labelledby="pause-result" className={`rounded-3xl border-4 p-6 sm:p-8 ${style.box}`}>
-              <RiskBadge level={level} large />
-              {level === 'HIGH' ? (
-                <>
-                  <h2 id="pause-result" tabIndex={-1} className="mt-4 text-4xl font-extrabold leading-tight text-danger focus:outline-none sm:text-5xl">
-                    PAUSE.
-                    <br />
-                    DO NOT PAY YET.
-                  </h2>
-                  <p className="mt-3 text-2xl font-extrabold">Verify the request independently.</p>
-                  <p className="mt-3 text-xl">
-                    Your answers show several warning signs that scammers use. This does not prove it is a scam, but it is
-                    a very good reason to stop and check before any money, codes, or information leave your hands.
-                  </p>
-                </>
-              ) : level === 'CAREFUL' ? (
-                <>
-                  <h2 id="pause-result" tabIndex={-1} className="mt-4 text-4xl font-extrabold leading-tight focus:outline-none">
-                    Slow down and double-check.
-                  </h2>
-                  <p className="mt-3 text-xl">
-                    Your answers show a warning sign or two. Before you pay or share anything, verify the request
-                    independently using the steps below.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h2 id="pause-result" tabIndex={-1} className="mt-4 text-4xl font-extrabold leading-tight focus:outline-none">
-                    We did not find major warning signs in your answers.
-                  </h2>
-                  <p className="mt-3 text-xl">
-                    That does not guarantee anything is genuine. If the request involves money or personal information and
-                    you were not expecting it, verify it independently before you act.
-                  </p>
-                </>
-              )}
-            </section>
-
-            {yes.length > 0 && (
-              <Card aria-labelledby="why-heading">
-                <SectionHeading id="why-heading">Why we say that</SectionHeading>
-                <ul className="space-y-3">
-                  {yes.map((q) => (
-                    <li key={q.id} className="rounded-2xl border-2 border-line bg-paper p-4">
-                      <p className="text-xl font-extrabold">
-                        {q.technique && (
-                          <span aria-hidden="true" className="mr-2">
-                            {TECHNIQUES[q.technique].icon}
-                          </span>
-                        )}
-                        You said yes: {q.text}
-                      </p>
-                      <p className="mt-2 text-lg">{q.why}</p>
-                    </li>
-                  ))}
-                </ul>
-                {techniquesFound.length > 0 && (
-                  <p className="mt-4 text-lg text-muted">
-                    Tactics at work: {techniquesFound.map((t) => TECHNIQUES[t].name).join(', ')}.
-                  </p>
-                )}
-              </Card>
-            )}
-
-            {level !== 'LOW' && (
-              <TrustedVerification
-                id="pause-trusted"
-                context={{
-                  asks: yes.filter((q) => q.askPhrase).map((q) => q.askPhrase!),
-                  reasons: yes.map((q) => q.reasonPhrase).slice(0, 4),
-                }}
-              />
-            )}
-
-            <VerificationGuide id="pause-verify" type={claimType} onTypeChange={setClaimType} onOpenLearn={onOpenLearn} />
-
-            <Card tone="plain" aria-label="Have the message?">
-              <p className="mb-3 text-xl font-bold">Do you have the message or email?</p>
-              <p className="mb-4 text-lg text-muted">Paste it into Check a Message and we will point out the warning signs in it.</p>
-              <BigButton variant="secondary" onClick={() => onNavigate('check')}>
-                🔍 Check a message
-              </BigButton>
-            </Card>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

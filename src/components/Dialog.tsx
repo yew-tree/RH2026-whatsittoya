@@ -58,11 +58,11 @@ export const Dialog: React.FC<DialogProps> = ({ labelledBy, describedBy, onClose
     };
   }, []);
 
-  const border = tone === 'danger' ? 'border-danger' : tone === 'warn' ? 'border-warn' : 'border-brand';
+  const accent = tone === 'danger' ? 'var(--color-danger)' : tone === 'warn' ? 'var(--color-warn)' : 'var(--color-brand)';
 
   // Rendered in a portal so no transformed ancestor can break position: fixed.
   return createPortal(
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/55">
       <div className="flex min-h-full items-center justify-center p-4">
         <div
           ref={ref}
@@ -70,7 +70,8 @@ export const Dialog: React.FC<DialogProps> = ({ labelledBy, describedBy, onClose
           aria-modal="true"
           aria-labelledby={labelledBy}
           aria-describedby={describedBy}
-          className={`wity-fade-in w-full max-w-2xl rounded-3xl border-4 bg-card p-6 shadow-2xl sm:p-8 ${border}`}
+          className="surface wity-fade-in w-full max-w-xl p-6 shadow-xl sm:p-7"
+          style={{ borderTop: `4px solid ${accent}` }}
         >
           {children}
         </div>

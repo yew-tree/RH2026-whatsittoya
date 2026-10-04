@@ -18,9 +18,12 @@ BEFORE YOU GO ON (60 seconds of setup)
   2. Open the "Check a Message" page once to confirm it loads.
   3. Copy the text in the "DEMO INPUT" section (near the bottom of this file)
      to your clipboard.
-  4. Set the browser zoom to 100%, and keep the "Make it easier to read" bar
-     on STANDARD text and NORMAL contrast (you switch it live in Part 8).
-  5. Start on the HOME page.
+  4. Set the browser zoom to 100%, and leave the "Accessibility" settings
+     (button in the top-right of the header) on their defaults: Standard
+     text size, everything else off. You change them live in Part 8.
+  5. Do one full practice run, and click "Copy message" once to confirm the
+     browser allows copying (it may ask permission the first time).
+  6. Start on the HOME page.
 
 
 ==============================================================================
@@ -46,7 +49,7 @@ ACTION:   Gesture at the screen.
 
 EXPECTED RESULT:  The Home page: the name "WhatsItToYa?", the line
   "Stop. Check. Protect.", and "Scammers create pressure. We help you slow
-  things down."
+  down and verify before you act."
 
 SPEAKER:
   "The name is the idea. When someone you did not expect asks for your money,
@@ -77,19 +80,20 @@ SPEAKER:
   either, in the moment. So our shield is built around four steps:
   Detect, Interrupt, Protect, Educate. Let me show you."
 
-EXPECTED RESULT:  The "How it protects you" row of four step cards is visible
-  on the Home page (Detect, Interrupt, Protect, Educate).
+EXPECTED RESULT:  The "How WhatsItToYa? protects you" section is visible on
+  the Home page, with four short entries: Detect, Interrupt, Protect, Educate.
+  (Scroll down slightly if it is below the fold.)
 
 
 ==============================================================================
 PART 3 - LIVE DEMO: DETECT                                     (about 0:30)
 ==============================================================================
 
-ACTION:   Click "Check a Message" in the top navigation (or the big
-          "Check a message" button on Home).
-ACTION:   Click inside the large "Paste the message here" box.
+ACTION:   Click "Check a Message" in the top navigation (or the blue
+          "Check a Message" button on Home).
+ACTION:   Click inside the large "Message" box ("Paste the message here").
 ACTION:   Paste the DEMO INPUT text (Ctrl+V).
-ACTION:   Click the big "Check this message" button.
+ACTION:   Click the blue "Check message" button under the box.
 
 SPEAKER:
   "This is a fake bank fraud alert I wrote. It is fictional, but it is built
@@ -97,8 +101,8 @@ SPEAKER:
   'safe account', and a demand for secrecy. I paste the whole email, headers
   and all, and press Check."
 
-EXPECTED RESULT:  A short "Checking your message..." panel appears for about
-  a second. Then the analysis finishes.
+EXPECTED RESULT:  The button shows "Checking..." for about a second. Then the
+  analysis finishes.
 
 SPEAKER (as the dialog appears, point at the three bullet points in it):
   "Our shield read it for social-engineering signals. Look at what it noticed
@@ -114,12 +118,14 @@ PART 4 - LIVE DEMO: INTERRUPT                                  (about 0:40)
 
 ACTION:   Do not click yet. Let the judges read the dialog.
 
-EXPECTED RESULT:  A large dialog headed "Before you continue..." covers the
-  page. It says "We noticed several warning signs. Take a moment before
-  sending money or information." It lists three of the signals, then a red
-  box: "Do not send money yet. Do not share any codes or passwords. Do not use
-  the phone number or link in the message." Three big buttons: "Ask someone I
-  trust", "Show me how to check this safely", "Show me what you noticed".
+EXPECTED RESULT:  A dialog headed "Before you continue" appears over the
+  page, with a red top edge and a warning icon. It says "This message contains
+  several signs commonly associated with payment scams. We recommend pausing
+  before you send money or share information." Under "What we noticed" it
+  lists three of the signals, then a pink box "Until you have checked: Do not
+  send money. Do not share codes or passwords. Do not use the phone number or
+  link in the message." Buttons: "Ask someone I trust" (blue), "How to check
+  this safely", and a text link "See what we noticed".
 
 SPEAKER:
   "This is the interruption. We call it smart friction. Notice what it is
@@ -145,57 +151,57 @@ EXPECTED RESULT:  Keyboard focus sits on the first button, "Ask someone I
 PART 5 - LIVE DEMO: PROTECT                                    (about 0:35)
 ==============================================================================
 
-ACTION:   Click "Ask someone I trust".
+ACTION:   Click "Ask someone I trust" in the dialog.
 
-EXPECTED RESULT:  The dialog closes and the page jumps to a card titled
-  "Ask Someone I Trust". It contains a yellow note "Prototype note:
-  WhatsItToYa? does not send anything for you", a box for the person's name,
-  and a ready-written message that begins "Hi, I got a message that claims to
-  be from a bank or card company and it wants me to share a verification
-  code..." and ends "I will contact the organization using official details
-  I find myself, not the ones in the message."
+EXPECTED RESULT:  The dialog closes and the page jumps to a section titled
+  "Ask someone you trust". It has a blue note: "How this works: WhatsItToYa?
+  writes a message for you to share. It does not contact anyone or send
+  anything. You choose how and when to send it." Below it: an optional "Who
+  will you ask?" box and a ready-written message that begins "Hi, I got a
+  message that claims to be from a bank or card company and it wants me to
+  share a verification code..." and ends "I will contact the organization
+  using official details I find myself, not the ones in the message."
 
 ACTION:   (Optional, 5 seconds) Click in "Who will you ask?" and type "Sarah".
           Point out that the message now starts "Hi Sarah,".
-ACTION:   Click "Copy message".
+ACTION:   Click the blue "Copy message" button.
 
-EXPECTED RESULT:  The button turns to "Copied!" and a green line says "Copied.
-  Now paste it into a text or email to someone you trust."
+EXPECTED RESULT:  The button changes to "Copied" and a green line says
+  "Copied. Paste it into a text or email to someone you trust."
 
 SPEAKER:
   "Scammers win by isolating people. 'Do not tell the tellers. Do not tell
   your family.' So our next step is the opposite: bring someone in.
 
-  One tap writes a calm message for her to send to a daughter, a neighbor, a
-  friend. To be honest about our prototype: it copies the message or opens
-  her own email or text app, and she presses send. We do not send anything for
-  her, and the card says so. The design is ready for a real trusted-contact
-  notification later.
+  One click writes a calm message for her to send to a daughter, a neighbor, a
+  friend. To be honest about our prototype: it copies the message, or opens
+  her own email or text app with the message filled in, and she presses send.
+  We do not send anything for her, and the screen says so. The design is ready
+  for a real trusted-contact notification later.
 
-  Right below it is 'Check It Safely'. For a bank claim it says: call the
-  number on the back of your card, or use the bank's official app. It also
-  says plainly: never use the phone number or the link in the suspicious
-  message."
+  Right below it is 'Check it safely'. For a bank claim it says: call the
+  number on the back of your card, or use the bank's official app. And it says
+  plainly: never use the phone number or the link in the suspicious message."
 
-ACTION:   Scroll down one screen to "Check It Safely".
+ACTION:   Scroll down one screen to "Check it safely".
 
-EXPECTED RESULT:  A card with a red warning "Never use a phone number, email
-  address, or link from the suspicious message to check it", a drop-down
-  "Who do they say they are?" set to "My bank or card company", and numbered
-  steps.
+EXPECTED RESULT:  A section with an amber note "Do not use a phone number,
+  email address, or link from the suspicious message to check it", a drop-down
+  "Who does the message claim to be from?" set to "My bank or card company",
+  and numbered steps.
 
 
 ==============================================================================
 PART 6 - LIVE DEMO: EDUCATE                                    (about 0:40)
 ==============================================================================
 
-ACTION:   Scroll up to the "What we noticed" card.
-ACTION:   If it helps, point at one entry, for example "Asking you to send or
-          move money" or "Asking you to keep this secret".
+ACTION:   Scroll up to the "What we noticed" section.
+ACTION:   Point at one entry, for example "Asking you to send or move money"
+          or "Asking you to keep this secret".
 
-EXPECTED RESULT:  Each entry shows what we found, a quote from the message
-  ("In the message: ..."), and "Why it matters: ...". A button reads "Show 7
-  more warning signs".
+EXPECTED RESULT:  Each entry shows a signal title, a quote from the message in
+  italics, and a plain explanation of why it matters. A button below the list
+  reads "Show 7 more warning signs".
 
 SPEAKER:
   "A generic red warning teaches nothing. We explain WHY. See this one:
@@ -203,40 +209,44 @@ SPEAKER:
   email, then explains: real banks never ask you to move your money to a safe
   account. That is a known scam."
 
-ACTION:   Scroll to "How this message tries to influence you".
+ACTION:   Scroll to "How this message tries to influence you" (below "Check it
+          safely").
 
-EXPECTED RESULT:  Cards for Authority, Unusual payment, Secrecy, Pretending
-  to be someone you know, Urgency and Fear, each with a plain explanation and
-  a "What helps" line.
+EXPECTED RESULT:  A list of tactics: Authority, Unusual payment, Secrecy,
+  Pretending to be someone you know, Urgency and Fear. Each has a plain
+  explanation and a "What helps" line.
 
 SPEAKER:
   "And it names the manipulation. Urgency: 'This message is pressuring you to
-  act immediately. Scammers create urgency because slowing down gives you
-  time to notice warning signs.' Margaret does not just see a warning. She
-  learns the trick, so she can spot it next time with no app at all."
+  act immediately. Scammers create urgency because slowing down gives you time
+  to notice warning signs.' Margaret does not just see a warning. She learns
+  the trick, so she can spot it next time with no app at all."
 
 ACTION:   Click "Pause Before You Pay" in the top navigation.
-ACTION:   Click "Yes" on: "Did someone contact you unexpectedly?",
-          "Are they asking you to act immediately?" and
-          "Are they asking you to keep this secret?".
-ACTION:   Click "See what to do".
+ACTION:   Answer the questions one at a time: select an answer, then click
+          "Next". Use: Question 1 Yes, Question 2 Yes, Question 3 No,
+          Question 4 (keep this secret) Yes, then No for Questions 5 to 9.
+          On the last question the button says "See result".
+          (The progress bar and "Question 4 of 9" label show where you are.
+          Practice this once; it is nine quick clicks.)
 
-EXPECTED RESULT:  A red result: "HIGH RISK. PAUSE. DO NOT PAY YET. Verify the
-  request independently." Below it, "Why we say that" explains each answer.
+EXPECTED RESULT:  A red-edged banner: "HIGH RISK. Pause. Do not pay yet."
+  Below it, "Why we say that" explains each "Yes" answer.
 
 SPEAKER:
   "Not everyone has a message to paste. Maybe it is a phone call. Pause Before
-  You Pay is ten big yes-or-no questions. Three yeses and we say: pause, do
+  You Pay is a short, guided questionnaire. A few yeses and we say: pause, do
   not pay yet, verify independently. Again, we never say 'this is a scam'. We
   say 'here is why you should check first'."
 
-(OPTIONAL - ONLY IF YOU ARE UNDER 4:00:)
-ACTION:   Click "Practice". Choose the answer "Hang up, then call my grandchild
-          on the number I already have" in the grandparent scenario (answers
-          appear in a different order each session; the scenarios come in a
-          fixed order, the grandchild one is second).
-SPEAKER:  "And 'Would You Trust This?' lets people practice with realistic
-          make-believe scams. No scores to fail, just a kind explanation of
+(OPTIONAL - ONLY IF YOU ARE UNDER 4:00; SKIP PAUSE FIRST IF YOU ARE LONG:)
+ACTION:   Click "Would You Trust This?" in the navigation. Answer the first
+          scenario, click "Next scenario", then in the second scenario (the
+          grandchild call) choose "Hang up, then call my grandchild on the
+          number I already have". The answers appear in a different order
+          each session.
+SPEAKER:  "'Would You Trust This?' lets people practice with realistic
+          make-believe scams. No scores to fail, just a clear explanation of
           the warning signs."
 
 
@@ -271,22 +281,27 @@ SPEAKER:
 PART 8 - WHY OLDER ADULTS / ACCESSIBILITY                      (about 0:25)
 ==============================================================================
 
-ACTION:   Click "A++" in the "Make it easier to read" bar at the top, then
-          click "High contrast".
+ACTION:   Click the "Accessibility" button at the top right of the header.
+ACTION:   In the panel, choose "Extra large" under Text size, then tick
+          "High contrast". Click "Done".
 
-EXPECTED RESULT:  All text becomes much larger and the colors switch to black
-  on white with heavy borders. The choice is remembered on this device.
+EXPECTED RESULT:  A small "Display settings" panel opens with Text size
+  (Standard, Large, Extra large), High contrast, Increased spacing and Reduce
+  motion. After you choose, all text becomes much larger and the colors switch
+  to black on white with heavier borders. The choice is remembered on this
+  device.
 
 SPEAKER:
   "We did not design this for people who cannot cope. We designed it because
   manipulation is sophisticated, and anyone can be caught on a bad day. The
-  tools are simple: large text by default, one-click bigger text and high
-  contrast, big buttons with real words on them instead of mystery icons,
-  short sentences, keyboard and screen-reader support, and an option for less
-  motion. No jargon, no scores to decode. Just: what we noticed, why it
-  matters, and what to do next."
+  tools are simple: readable text by default, larger text and high contrast
+  one click away, big buttons with real words on them instead of mystery
+  icons, short sentences, keyboard and screen-reader support, and an option
+  for less motion. No jargon, no scores to decode. Just: what we noticed, why
+  it matters, and what to do next."
 
-ACTION:   Click "A" and "High contrast" again to switch back to normal.
+ACTION:   Open "Accessibility" again and click "Reset to defaults", then
+          "Done", to switch back to normal.
 
 
 ==============================================================================
@@ -334,8 +349,8 @@ IF THE AI / API IS UNAVAILABLE
   call fails, the app automatically uses its built-in checks. The DEMO INPUT
   produces the same High Risk result and the same interruption. Tell the
   judges: "This is our offline mode, which is also what protects someone with
-  no connection." (Open "More details (optional)" on the result page to show
-  the line "How we checked".)
+  no connection." (Open "More details" at the bottom of the result page to
+  show the line "How we checked".)
   NOTE: the AI path was not tested with a live key while this script was
   written. Do NOT promise AI features in the demo unless you tested them with
   your own key beforehand.
@@ -349,12 +364,13 @@ IF INTERNET ACCESS FAILS
 IF AN ANALYSIS TAKES TOO LONG
   The app gives up on the AI after 12 seconds and switches to the built-in
   checks by itself. Keep talking about the problem while it works. If it
-  still seems stuck after 15 seconds, click "Clear and start over", then click
-  the "Fake bank fraud alert" example card (no pasting needed).
+  still seems stuck after 15 seconds, refresh the page (F5), then choose
+  "Fake bank fraud alert" under "Try an example" (no pasting needed).
 
 IF A FEATURE FAILS DURING JUDGING
-  - Pasting does not work: use the example cards on the Check page ("Fake
-    bank fraud alert") or the "See an example scam" button on the Home page.
+  - Pasting does not work: choose "Fake bank fraud alert" under "Try an
+    example" on the Check page, or use the "See an example scam" link on the
+    Home page.
   - Copy button blocked by the browser: a red line tells you; select the text
     in the message box and press Ctrl+C. Or just read it aloud.
   - Dialog does not appear: the result page still shows "HIGH RISK" and the
@@ -436,7 +452,7 @@ PROBLEM:    Scams work by manipulating emotion (urgency, fear, authority,
 SOLUTION:   WhatsItToYa? helps you slow down, spot the warning signs, and
             verify before you act. "What's it to ya?" = why do you need this?
 
-DETECT:     Paste the DEMO INPUT, click "Check this message". Shield reads the
+DETECT:     Paste the DEMO INPUT, click "Check message". Shield reads the
             pressure plus code, password and money requests. Result: HIGH RISK.
 INTERRUPT:  "Before you continue..." dialog. Only for real risk. Too early =
             frustration, too late = money lost. Calm, no blame.
@@ -449,7 +465,7 @@ EDUCATE:    "What we noticed" + "Why it matters" + named tactics (urgency,
 4 QUESTIONS: Notice = pressure and payment/code requests. Intervene = only on
             real risk. Next = pause, ask someone, verify independently. Listen
             = calm, plain words, explains why, never blames.
-ACCESSIBILITY: Click A++ and High contrast. Large text, big labeled buttons,
+ACCESSIBILITY: Accessibility > Extra large + High contrast. Readable text, labeled buttons,
             plain words, keyboard friendly.
 TECH:       React + TypeScript, small Node server, rules run offline in the
             browser. Optional Gemini AI on top if a key is set.
