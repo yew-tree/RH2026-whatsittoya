@@ -55,6 +55,13 @@ export default function App() {
     window.setTimeout(() => document.getElementById('page-title')?.focus(), 30);
   }, [page]);
 
+  // Leaving Check a Message discards the pasted text and its result, so coming back
+  // always starts with a blank box. Nothing is saved, so a refresh or closing the tab does too.
+  const { clear: clearChecker } = checker;
+  useEffect(() => {
+    if (page !== 'check') clearChecker();
+  }, [page, clearChecker]);
+
   const navigate = useCallback((next: PageId) => {
     if (next !== 'learn') setLearnScamId(undefined);
     if (window.location.hash === `#/${next}`) {
