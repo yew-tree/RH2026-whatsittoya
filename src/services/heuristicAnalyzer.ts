@@ -935,13 +935,13 @@ export function runFullHeuristicAnalysis(
   compositeScore = Math.min(100, Math.max(0, compositeScore));
 
   let verdict: OverallAnalysisResult['verdict'] = 'SAFE';
-  let verdictTitle = 'Looks Safe & Normal';
-  let verdictExplanation = 'Great news! We did not find any tricky links, rush tactics, or fake sender addresses. This email appears calm and standard.';
+  let verdictTitle = 'No Major Warning Signs Found';
+  let verdictExplanation = 'We did not find tricky links, rush tactics, or fake sender addresses. That does not guarantee the message is genuine, so always verify unexpected requests about money or personal information.';
 
   if (compositeScore >= 80) {
     verdict = 'CRITICAL_THREAT';
     verdictTitle = 'Looks Like a Scam — Please Do Not Click Anything';
-    verdictExplanation = 'You did the right thing by checking! Scammers are very sneaky and try to trick people with fake deadlines and deceptive links. You are completely safe—just do not click any buttons.';
+    verdictExplanation = 'You did the right thing by checking! Scammers are very sneaky and try to trick people with fake deadlines and deceptive links. Please do not click any buttons or send anything until you have verified it another way.';
   } else if (compositeScore >= 60) {
     verdict = 'HIGH_RISK';
     verdictTitle = 'Needs Extra Care — High Chance of a Trick';
@@ -961,7 +961,7 @@ export function runFullHeuristicAnalysis(
   if (verdict === 'CRITICAL_THREAT' || verdict === 'HIGH_RISK') {
     recommendedActions.push({
       priority: 'immediate',
-      action: 'Take a deep breath — you are completely safe right now.',
+      action: 'Take a deep breath. Nothing bad has happened yet, and you have time to check.',
       reason: 'Nothing bad has happened to your accounts or computer. Checking this email first was the smartest move!'
     });
     recommendedActions.push({
@@ -971,7 +971,7 @@ export function runFullHeuristicAnalysis(
     });
     recommendedActions.push({
       priority: 'precaution',
-      action: 'It is 100% safe to simply delete this email.',
+      action: 'Deleting a suspicious email will not hurt your accounts.',
       reason: 'Deleting a scam email will not hurt your accounts. If there is ever a real issue, companies will send regular mail or show it when you log in.'
     });
     if (sender.officialWebsite) {

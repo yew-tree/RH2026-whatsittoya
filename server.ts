@@ -65,6 +65,8 @@ app.post('/api/analyze-email', async (req: Request, res: Response) => {
         const prompt = `You are a patient, friendly, and compassionate Email Safety Assistant helping everyday people, older adults, and community members stay safe online.
 
 CRITICAL INSTRUCTIONS ON TONE AND EMPATHY:
+- NEVER describe any message as "safe", "legitimate", or "verified". You cannot guarantee that. When you find no problems, say "we did not find major warning signs" and remind the reader to verify unexpected requests about money or personal information independently.
+- NEVER tell the reader to verify using a phone number, email address, or link that appears inside the message. Tell them to find official contact details themselves.
 - NEVER blame or shame the reader. Always be reassuring and encouraging: "You did the right thing by checking this email!" or "Scammers try very hard to trick people, so pausing to check is smart."
 - Avoid intimidating cybersecurity acronyms (don't use terms like "DNS heuristics", "payload dropper", "attack vector").
 - Use everyday, simple, clear analogies and plain words.
@@ -110,7 +112,7 @@ Provide your assessment in the following exact JSON format:
 {
   "riskScore": <integer 0-100>,
   "verdict": "<CRITICAL_THREAT | HIGH_RISK | SUSPICIOUS | CAUTION | SAFE>",
-  "verdictTitle": "<Friendly, plain-English summary, e.g.: 'This looks like a trick email - please do not click anything' or 'This looks like a normal, safe message'>",
+  "verdictTitle": "<Friendly, plain-English summary, e.g.: 'This looks like a trick email - please do not click anything' or 'We did not find major warning signs, but please still verify anything unexpected'>",
   "verdictExplanation": "<Warm, reassuring explanation in 2 friendly sentences. Start by praising them for checking!>",
   "tone": {
     "urgencyLevel": "<critical | high | moderate | low | neutral>",
@@ -182,7 +184,7 @@ Provide your assessment in the following exact JSON format:
   "recommendedActions": [
     {
       "priority": "<immediate | precaution | general>",
-      "action": "<Simple, comforting step, e.g. 'Take a deep breath — you are completely safe right now'>",
+      "action": "<Simple, comforting step, e.g. 'Take a deep breath. Nothing bad has happened yet, and you have time to check'>",
       "reason": "<Reassuring reason>"
     }
   ],
@@ -384,12 +386,12 @@ Your response as their protective in-email agent:`;
       });
 
       return res.json({
-        reply: response.text || 'I am right here with you! You are completely safe. When in doubt, do not click any links, and feel free to delete this email.'
+        reply: response.text || 'I am right here with you! When in doubt, do not click any links or send anything, and check using contact details you find yourself.'
       });
     }
 
     // Heuristic fallback response
-    let fallbackReply = "I am your Email Guardian Agent. You are completely safe right now. If this email claims your account is in danger or asks for money/passwords, do not click any links. It is 100% safe to simply delete this email.";
+    let fallbackReply = "I am your Email Guardian Agent. If a message claims your account is in danger or asks for money or passwords, do not click any links or reply. Check using official contact details you find yourself, not the ones in the message.";
     const lower = (message || '').toLowerCase();
     if (lower.includes('click') || lower.includes('link')) {
       fallbackReply = "Please do not click any links in this email! Scammers use buttons that look real but secretly steal passwords. If you want to check your account, type the real company website directly in your browser.";
@@ -421,7 +423,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`PhishGuard Server running on http://0.0.0.0:${PORT}`);
+    console.log(`WhatsItToYa? server running on http://localhost:${PORT} (AI helper: ${apiKey ? 'on' : 'off, built-in checks only'})`);
   });
 }
 

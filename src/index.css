@@ -1,36 +1,130 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #F8F7F4;
-  --ink: #1A1A1A;
-  --accent: #2A5B52;
-  --ink-faint: rgba(26, 26, 26, 0.08);
-  --ink-muted: rgba(26, 26, 26, 0.6);
-  --safe: #2E7D32;
-  --danger: #C62828;
-  --warning: #EF6C00;
+/*
+  WhatsItToYa? design tokens.
+  All colors are CSS variables so the High Contrast option can swap them in one place.
+  Text sizes use rem, so the A / A+ / A++ buttons scale the whole app by changing the root font size.
+*/
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-paper: #f4f7fa;
+  --color-card: #ffffff;
+  --color-ink: #12202f;
+  --color-muted: #435468;
+  --color-line: #b9c6d4;
+
+  --color-brand: #0b5d75;
+  --color-brand-dark: #07414f;
+  --color-brand-soft: #def0f5;
+  --color-on-brand: #ffffff;
+
+  --color-ok: #14602f;
+  --color-ok-soft: #e1f3e7;
+  --color-warn: #7a4300;
+  --color-warn-soft: #fff1cf;
+  --color-danger: #a3131f;
+  --color-danger-soft: #fde7e9;
+  --color-focus: #1b4fd8;
+}
+
+html {
+  font-size: 18px; /* larger than the usual 16px by default */
+}
+html[data-text='large'] {
+  font-size: 21px;
+}
+html[data-text='xl'] {
+  font-size: 25px;
 }
 
 body {
-  background-color: #F8F7F4;
-  color: #1A1A1A;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
-.font-serif-editorial {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+/* High contrast: near-black on white, strong borders, dark buttons. */
+html[data-contrast='high'] {
+  --color-paper: #ffffff;
+  --color-card: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #1a1a1a;
+  --color-line: #000000;
+  --color-brand: #003a4d;
+  --color-brand-dark: #00212c;
+  --color-brand-soft: #ffffff;
+  --color-ok: #004d1a;
+  --color-ok-soft: #ffffff;
+  --color-warn: #4d2800;
+  --color-warn-soft: #ffffff;
+  --color-danger: #7a0000;
+  --color-danger-soft: #ffffff;
+  --color-focus: #0000ee;
+}
+html[data-contrast='high'] .hc-border {
+  border-width: 3px;
 }
 
-.font-mono-editorial {
-  font-family: 'Space Mono', monospace;
+/* Easy-read spacing */
+html[data-spacing='roomy'] body {
+  letter-spacing: 0.02em;
+  line-height: 1.85;
 }
 
-.font-sans-editorial {
-  font-family: 'Inter', sans-serif;
+/* Always show a clear focus ring for keyboard users */
+:focus-visible {
+  outline: 4px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 ::selection {
-  background: #2A5B52;
-  color: #FFFFFF;
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* Reduced motion: respect the system setting, or the in-app switch */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@keyframes wity-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.wity-fade-in {
+  animation: wity-fade-in 0.25s ease-out both;
+}
+
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }

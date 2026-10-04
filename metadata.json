@@ -1,6 +1,6 @@
 {
-  "name": "Email Safety Helper - Friendly Email Checker",
-  "description": "A kind, simple, and friendly email assistant designed for everyone. Checks if an email is rushing you, inspects tricky links, and verifies who really sent it—with zero technical jargon and zero blame.",
+  "name": "WhatsItToYa? Stop. Check. Protect.",
+  "description": "A calm, plain-language social engineering shield. Paste a suspicious message, pause before paying, and verify safely. Detect, interrupt, protect, educate.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

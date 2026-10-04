@@ -113,7 +113,7 @@ Thank you!`,
   },
   {
     id: 'sample-6',
-    title: 'A Real, Safe Notice from GitHub',
+    title: 'An ordinary notice from GitHub',
     category: 'legit_security',
     categoryLabel: 'Standard Notice',
     badgeColor: 'emerald',
@@ -131,6 +131,6 @@ If you no longer need it, no action is needed.
 
 Thanks,
 The GitHub Team`,
-    description: 'What a real email looks like: calm tone, gives you plenty of time (30 days), and the sender address really belongs to github.com.'
+    description: 'A calm, ordinary email: no pressure, plenty of time (30 days), and a sender address that matches github.com. We would still find no major warning signs, but we cannot promise any message is genuine.'
   }
 ];
