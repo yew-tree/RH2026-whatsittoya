@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #F8F7F4;
+  --ink: #1A1A1A;
+  --accent: #2A5B52;
+  --ink-faint: rgba(26, 26, 26, 0.08);
+  --ink-muted: rgba(26, 26, 26, 0.6);
+  --safe: #2E7D32;
+  --danger: #C62828;
+  --warning: #EF6C00;
+}
+
+body {
+  background-color: #F8F7F4;
+  color: #1A1A1A;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-mono-editorial {
+  font-family: 'Space Mono', monospace;
+}
+
+.font-sans-editorial {
+  font-family: 'Inter', sans-serif;
+}
+
+::selection {
+  background: #2A5B52;
+  color: #FFFFFF;
+}
