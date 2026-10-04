@@ -1,0 +1,462 @@
+==============================================================================
+WhatsItToYa?  -  HACKATHON DEMO SCRIPT
+"Stop. Check. Protect."
+Target length: about 4 minutes 45 seconds (stay under 5:00)
+==============================================================================
+
+HOW TO READ THIS SCRIPT
+  SPEAKER:          what to say out loud
+  ACTION:           what to click, type, paste or show
+  EXPECTED RESULT:  what the judges should see on screen
+
+Everything below was run against the finished app before this script was
+written. Nothing here depends on a feature that does not work.
+
+BEFORE YOU GO ON (60 seconds of setup)
+  1. In a terminal, in the project folder:   npm run dev
+     Then open http://localhost:3000 in the browser.
+  2. Open the "Check a Message" page once to confirm it loads.
+  3. Copy the text in the "DEMO INPUT" section (near the bottom of this file)
+     to your clipboard.
+  4. Set the browser zoom to 100%, and keep the "Make it easier to read" bar
+     on STANDARD text and NORMAL contrast (you switch it live in Part 8).
+  5. Start on the HOME page.
+
+
+==============================================================================
+PART 1 - OPENING / HOOK                                        (about 0:30)
+==============================================================================
+
+ACTION:   Start on the HOME page. Do not click anything yet.
+
+SPEAKER:
+  "Picture Margaret. She is 74. It is 9 in the morning and her phone buzzes.
+  It is her bank. 'Fraud team. Someone is moving $3,480 out of your account
+  right now. You have 30 minutes. Read us the code we just texted you, and do
+  not tell anyone, because the criminals may be watching your family.'
+
+  Her heart is pounding. Here is the thing: the dangerous part is not the
+  link in that message. It is the feeling. The scammer is not hacking her
+  computer. The scammer is hacking her emotions, and trying to make her act
+  BEFORE she stops to verify.
+
+  We built WhatsItToYa? for that exact moment."
+
+ACTION:   Gesture at the screen.
+
+EXPECTED RESULT:  The Home page: the name "WhatsItToYa?", the line
+  "Stop. Check. Protect.", and "Scammers create pressure. We help you slow
+  things down."
+
+SPEAKER:
+  "The name is the idea. When someone you did not expect asks for your money,
+  your passwords, or your trust, stop and ask them: 'What's it to ya?' Why do
+  you need this, and who are you really?
+
+  Stop. Check. Protect. Three words Margaret can remember even when she is
+  scared."
+
+
+==============================================================================
+PART 2 - THE PROBLEM                                           (about 0:20)
+==============================================================================
+
+ACTION:   Stay on the Home page.
+
+SPEAKER:
+  "Socially engineered scams are hard to stop because the weakness is not
+  technical. Scammers use the same handful of levers every time:
+  URGENCY - act now.
+  FEAR - something terrible will happen.
+  AUTHORITY - I am your bank, the police, your boss.
+  TRUST - I am your grandson.
+  SECRECY - do not tell anyone.
+  And EMOTION underneath all of it.
+
+  A spam filter cannot see any of that. A frightened person often cannot
+  either, in the moment. So our shield is built around four steps:
+  Detect, Interrupt, Protect, Educate. Let me show you."
+
+EXPECTED RESULT:  The "How it protects you" row of four step cards is visible
+  on the Home page (Detect, Interrupt, Protect, Educate).
+
+
+==============================================================================
+PART 3 - LIVE DEMO: DETECT                                     (about 0:30)
+==============================================================================
+
+ACTION:   Click "Check a Message" in the top navigation (or the big
+          "Check a message" button on Home).
+ACTION:   Click inside the large "Paste the message here" box.
+ACTION:   Paste the DEMO INPUT text (Ctrl+V).
+ACTION:   Click the big "Check this message" button.
+
+SPEAKER:
+  "This is a fake bank fraud alert I wrote. It is fictional, but it is built
+  from real scams: a made-up bank, an urgent transfer, a code request, a
+  'safe account', and a demand for secrecy. I paste the whole email, headers
+  and all, and press Check."
+
+EXPECTED RESULT:  A short "Checking your message..." panel appears for about
+  a second. Then the analysis finishes.
+
+SPEAKER (as the dialog appears, point at the three bullet points in it):
+  "Our shield read it for social-engineering signals. Look at what it noticed
+  right away: it is asking for a verification code, it is asking for a
+  password, and it is asking me to move money. That is Detect. We will look
+  at every signal in a moment. First, look at what just happened to the
+  screen."
+
+
+==============================================================================
+PART 4 - LIVE DEMO: INTERRUPT                                  (about 0:40)
+==============================================================================
+
+ACTION:   Do not click yet. Let the judges read the dialog.
+
+EXPECTED RESULT:  A large dialog headed "Before you continue..." covers the
+  page. It says "We noticed several warning signs. Take a moment before
+  sending money or information." It lists three of the signals, then a red
+  box: "Do not send money yet. Do not share any codes or passwords. Do not use
+  the phone number or link in the message." Three big buttons: "Ask someone I
+  trust", "Show me how to check this safely", "Show me what you noticed".
+
+SPEAKER:
+  "This is the interruption. We call it smart friction. Notice what it is
+  not. It is not a banner Margaret has seen a hundred times. It does not
+  appear on every email. It only appears when the shield finds meaningful
+  risk, in this case a request for money and a code, combined with pressure
+  and secrecy.
+
+  That is the hackathon's own principle: too early creates frustration, too
+  late means money is lost. If we warned about everything, people would learn
+  to click past us. So we stay quiet for ordinary mail, and stop the person at
+  the moment it matters, before they reply, click or pay.
+
+  And the tone is calm. 'You have done nothing wrong. Checking first was a
+  smart move.' We never blame the person."
+
+EXPECTED RESULT:  Keyboard focus sits on the first button, "Ask someone I
+  trust". (You can mention that Tab stays inside the dialog and Escape closes
+  it.)
+
+
+==============================================================================
+PART 5 - LIVE DEMO: PROTECT                                    (about 0:35)
+==============================================================================
+
+ACTION:   Click "Ask someone I trust".
+
+EXPECTED RESULT:  The dialog closes and the page jumps to a card titled
+  "Ask Someone I Trust". It contains a yellow note "Prototype note:
+  WhatsItToYa? does not send anything for you", a box for the person's name,
+  and a ready-written message that begins "Hi, I got a message that claims to
+  be from a bank or card company and it wants me to share a verification
+  code..." and ends "I will contact the organization using official details
+  I find myself, not the ones in the message."
+
+ACTION:   (Optional, 5 seconds) Click in "Who will you ask?" and type "Sarah".
+          Point out that the message now starts "Hi Sarah,".
+ACTION:   Click "Copy message".
+
+EXPECTED RESULT:  The button turns to "Copied!" and a green line says "Copied.
+  Now paste it into a text or email to someone you trust."
+
+SPEAKER:
+  "Scammers win by isolating people. 'Do not tell the tellers. Do not tell
+  your family.' So our next step is the opposite: bring someone in.
+
+  One tap writes a calm message for her to send to a daughter, a neighbor, a
+  friend. To be honest about our prototype: it copies the message or opens
+  her own email or text app, and she presses send. We do not send anything for
+  her, and the card says so. The design is ready for a real trusted-contact
+  notification later.
+
+  Right below it is 'Check It Safely'. For a bank claim it says: call the
+  number on the back of your card, or use the bank's official app. It also
+  says plainly: never use the phone number or the link in the suspicious
+  message."
+
+ACTION:   Scroll down one screen to "Check It Safely".
+
+EXPECTED RESULT:  A card with a red warning "Never use a phone number, email
+  address, or link from the suspicious message to check it", a drop-down
+  "Who do they say they are?" set to "My bank or card company", and numbered
+  steps.
+
+
+==============================================================================
+PART 6 - LIVE DEMO: EDUCATE                                    (about 0:40)
+==============================================================================
+
+ACTION:   Scroll up to the "What we noticed" card.
+ACTION:   If it helps, point at one entry, for example "Asking you to send or
+          move money" or "Asking you to keep this secret".
+
+EXPECTED RESULT:  Each entry shows what we found, a quote from the message
+  ("In the message: ..."), and "Why it matters: ...". A button reads "Show 7
+  more warning signs".
+
+SPEAKER:
+  "A generic red warning teaches nothing. We explain WHY. See this one:
+  'Asking you to send or move money.' It quotes the exact sentence from the
+  email, then explains: real banks never ask you to move your money to a safe
+  account. That is a known scam."
+
+ACTION:   Scroll to "How this message tries to influence you".
+
+EXPECTED RESULT:  Cards for Authority, Unusual payment, Secrecy, Pretending
+  to be someone you know, Urgency and Fear, each with a plain explanation and
+  a "What helps" line.
+
+SPEAKER:
+  "And it names the manipulation. Urgency: 'This message is pressuring you to
+  act immediately. Scammers create urgency because slowing down gives you
+  time to notice warning signs.' Margaret does not just see a warning. She
+  learns the trick, so she can spot it next time with no app at all."
+
+ACTION:   Click "Pause Before You Pay" in the top navigation.
+ACTION:   Click "Yes" on: "Did someone contact you unexpectedly?",
+          "Are they asking you to act immediately?" and
+          "Are they asking you to keep this secret?".
+ACTION:   Click "See what to do".
+
+EXPECTED RESULT:  A red result: "HIGH RISK. PAUSE. DO NOT PAY YET. Verify the
+  request independently." Below it, "Why we say that" explains each answer.
+
+SPEAKER:
+  "Not everyone has a message to paste. Maybe it is a phone call. Pause Before
+  You Pay is ten big yes-or-no questions. Three yeses and we say: pause, do
+  not pay yet, verify independently. Again, we never say 'this is a scam'. We
+  say 'here is why you should check first'."
+
+(OPTIONAL - ONLY IF YOU ARE UNDER 4:00:)
+ACTION:   Click "Practice". Choose the answer "Hang up, then call my grandchild
+          on the number I already have" in the grandparent scenario (answers
+          appear in a different order each session; the scenarios come in a
+          fixed order, the grandchild one is second).
+SPEAKER:  "And 'Would You Trust This?' lets people practice with realistic
+          make-believe scams. No scores to fail, just a kind explanation of
+          the warning signs."
+
+
+==============================================================================
+PART 7 - THE FOUR HACKATHON QUESTIONS                          (about 0:30)
+==============================================================================
+
+ACTION:   Stay on any page. Count the questions on your fingers.
+
+SPEAKER:
+  "The challenge asks four questions. Here are our answers.
+
+  WHAT DOES OUR SHIELD NOTICE?
+  The pressure, not just the link. Urgency, threats, secrecy, fake authority,
+  and requests for codes, passwords, gift cards, crypto or wire transfers,
+  plus lookalike senders and risky links.
+
+  WHEN DOES IT INTERVENE?
+  Only when real risk shows up, like a money or code request combined with
+  pressure. Ordinary email gets no interruption.
+
+  WHAT HAPPENS NEXT?
+  A pause, a message to someone they trust, and exact steps to verify
+  independently, never using the contact details in the message.
+
+  WHY WOULD THE USER LISTEN?
+  Because we are calm, we use plain words, we explain why, and we never blame
+  them."
+
+
+==============================================================================
+PART 8 - WHY OLDER ADULTS / ACCESSIBILITY                      (about 0:25)
+==============================================================================
+
+ACTION:   Click "A++" in the "Make it easier to read" bar at the top, then
+          click "High contrast".
+
+EXPECTED RESULT:  All text becomes much larger and the colors switch to black
+  on white with heavy borders. The choice is remembered on this device.
+
+SPEAKER:
+  "We did not design this for people who cannot cope. We designed it because
+  manipulation is sophisticated, and anyone can be caught on a bad day. The
+  tools are simple: large text by default, one-click bigger text and high
+  contrast, big buttons with real words on them instead of mystery icons,
+  short sentences, keyboard and screen-reader support, and an option for less
+  motion. No jargon, no scores to decode. Just: what we noticed, why it
+  matters, and what to do next."
+
+ACTION:   Click "A" and "High contrast" again to switch back to normal.
+
+
+==============================================================================
+PART 9 - TECHNICAL EXPLANATION                                 (about 0:20)
+==============================================================================
+
+SPEAKER:
+  "Quick look under the hood. It is a web app built with React and
+  TypeScript, with a small Node server. The shield's rules run right in the
+  browser: it looks for scam wording, checks links and whether the sender
+  really matches the company, then turns that into one of three plain levels:
+  Low Concern, Be Careful, High Risk. Because those rules are local, it still
+  works with no internet and no AI.
+
+  If a Gemini key is configured, the server can add an AI second opinion on
+  top. And the app never says a message is 'safe'. The lowest level is 'Low
+  Concern', with a reminder to verify anything about money."
+
+
+==============================================================================
+PART 10 - CLOSING                                              (about 0:15)
+==============================================================================
+
+ACTION:   Click "Home" so the name and tagline are on screen.
+
+SPEAKER:
+  "WhatsItToYa? is not a phishing detector. The goal is not to catch one more
+  bad email. The goal is to interrupt the manipulation, the pressure, the
+  secrecy, the countdown clock, BEFORE someone hands over their money, their
+  passwords, or their trust.
+
+  Because the scammer needs Margaret to act fast.
+  We give her three words to slow down.
+
+  Stop. Check. Protect.
+  WhatsItToYa?"
+
+
+==============================================================================
+DEMO BACKUP PLAN
+==============================================================================
+
+IF THE AI / API IS UNAVAILABLE
+  Nothing to do. This demo does not need it. With no AI key, or if the AI
+  call fails, the app automatically uses its built-in checks. The DEMO INPUT
+  produces the same High Risk result and the same interruption. Tell the
+  judges: "This is our offline mode, which is also what protects someone with
+  no connection." (Open "More details (optional)" on the result page to show
+  the line "How we checked".)
+  NOTE: the AI path was not tested with a live key while this script was
+  written. Do NOT promise AI features in the demo unless you tested them with
+  your own key beforehand.
+
+IF INTERNET ACCESS FAILS
+  The app runs from your own laptop (http://localhost:3000), so the demo
+  still works. The only outside item is the Google font, and the app falls
+  back to the computer's normal font. The FTC link in the footer will not
+  open; do not click it. Do not open any message link (the demo avoids it).
+
+IF AN ANALYSIS TAKES TOO LONG
+  The app gives up on the AI after 12 seconds and switches to the built-in
+  checks by itself. Keep talking about the problem while it works. If it
+  still seems stuck after 15 seconds, click "Clear and start over", then click
+  the "Fake bank fraud alert" example card (no pasting needed).
+
+IF A FEATURE FAILS DURING JUDGING
+  - Pasting does not work: use the example cards on the Check page ("Fake
+    bank fraud alert") or the "See an example scam" button on the Home page.
+  - Copy button blocked by the browser: a red line tells you; select the text
+    in the message box and press Ctrl+C. Or just read it aloud.
+  - Dialog does not appear: the result page still shows "HIGH RISK" and the
+    stop rules at the top. Say "this is where we interrupt" and continue.
+  - The page looks broken: refresh (F5) and use an example card.
+  - The server will not start: close the terminal, run "npm run dev" again.
+    As a last resort run "npm run build" and show the project on screen.
+
+WHAT STILL WORKS COMPLETELY LOCALLY, WITH NO INTERNET AND NO AI
+  - Check a Message: analysis, risk level, interruption, signals, tactics
+  - Ask Someone I Trust (copy message; email and text buttons open the
+    computer's own apps)
+  - Check It Safely guides
+  - Pause Before You Pay
+  - Learn to Spot a Scam (14 scam guides and 8 manipulation tactics)
+  - Would You Trust This? (6 scenarios)
+  - Text size, high contrast, spacing and motion options
+
+IF YOU ARE RUNNING LONG
+  Skip the optional Practice step and the "Sarah" typing step. Cut the Part 9
+  technical section to one sentence: "React and TypeScript, with rules that
+  run offline in the browser."
+
+
+==============================================================================
+DEMO INPUT
+==============================================================================
+
+Fictional and safe to demonstrate. The bank, the web addresses and the phone
+number (a 555 number) are made up. Do not click the link. Paste EVERYTHING
+below the line, starting at "From:" and ending at "Lakeshore Community Bank",
+into the "Paste the message here" box on the Check a Message page.
+
+Tested result: HIGH RISK, the "Before you continue..." dialog appears, and 12
+warning signs are found, including: a verification code request, a password
+request, a request to move money, a request for personal details, a secrecy
+request, a made-up sending address, urgency, a threat, and replies going
+somewhere else.
+
+------------------------------ COPY FROM HERE ------------------------------
+From: Lakeshore Community Bank Security <fraud-alerts@lakeshore-secure-verify.com>
+Reply-To: case-support@lakeshore-help-desk.net
+Subject: URGENT: Suspicious transfer on your account - respond within 30 minutes
+
+Dear Valued Customer,
+
+Our fraud team has detected an unauthorized transfer of $3,480.00 from your checking account. For your protection, your account will be suspended in 30 minutes unless we confirm that it was you.
+
+To cancel the transfer, we must verify your identity right now:
+
+1. Read us the 6-digit verification code we just texted to your phone.
+2. Confirm your online banking password.
+3. Wire your balance to a temporary protected account so the criminals cannot touch your money. Our officer will give you the wire details.
+
+Please do not tell the bank tellers or your family about this. The criminals may be monitoring them, and speaking to anyone could delay the case and result in legal action.
+
+Secure your account here: http://lakeshore-secure-verify.com/cancel-transfer
+
+Our security officer is standing by at 1-888-555-0142.
+
+Fraud Prevention Department
+Lakeshore Community Bank
+------------------------------- COPY TO HERE -------------------------------
+
+(The same message is built into the app. The "See an example scam" button on
+the Home page, and the "Fake bank fraud alert" card on the Check page, load it
+for you if you cannot paste.)
+
+
+==============================================================================
+30-SECOND CHEAT SHEET
+==============================================================================
+
+HOOK:       Margaret, 74. "Fraud team" texts: read us the code, move your money,
+            tell no one, you have 30 minutes. The danger is not the link. It is
+            the pressure.
+PROBLEM:    Scams work by manipulating emotion (urgency, fear, authority,
+            trust, secrecy) so people act BEFORE they verify.
+SOLUTION:   WhatsItToYa? helps you slow down, spot the warning signs, and
+            verify before you act. "What's it to ya?" = why do you need this?
+
+DETECT:     Paste the DEMO INPUT, click "Check this message". Shield reads the
+            pressure plus code, password and money requests. Result: HIGH RISK.
+INTERRUPT:  "Before you continue..." dialog. Only for real risk. Too early =
+            frustration, too late = money lost. Calm, no blame.
+PROTECT:    "Ask Someone I Trust" writes a message to copy (prototype, sends
+            nothing). "Check It Safely": never use the number or link in the
+            message.
+EDUCATE:    "What we noticed" + "Why it matters" + named tactics (urgency,
+            fear, secrecy...). Then Pause Before You Pay: PAUSE. DO NOT PAY YET.
+
+4 QUESTIONS: Notice = pressure and payment/code requests. Intervene = only on
+            real risk. Next = pause, ask someone, verify independently. Listen
+            = calm, plain words, explains why, never blames.
+ACCESSIBILITY: Click A++ and High contrast. Large text, big labeled buttons,
+            plain words, keyboard friendly.
+TECH:       React + TypeScript, small Node server, rules run offline in the
+            browser. Optional Gemini AI on top if a key is set.
+
+CLOSING:    "The goal is not to catch one more phishing email. It is to
+            interrupt the manipulation before someone loses money, passwords,
+            or trust. Stop. Check. Protect. WhatsItToYa?"
+
+NEVER SAY: "100% safe", "guaranteed", "catches all scams".
+==============================================================================
